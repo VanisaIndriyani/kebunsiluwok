@@ -121,11 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         Masuk <i class="fas fa-arrow-right ms-2"></i>
                     </button>
                     
-                    <!-- Footer Links -->
-                    <div>
-                        <a href="#" class="forgot-password">Lupa Password?</a>
-                    </div>
-
+                  
                     <div class="footer-copy">
                         &copy; 2024 IT Kebun Siluwok. All Rights Reserved.
                     </div>

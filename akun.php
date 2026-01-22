@@ -8,77 +8,68 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     exit;
 }
 
-// Handle CRUD Operations
-$message = '';
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['action'])) {
-        try {
-            if ($_POST['action'] == 'add') {
-                // Cek username exists
-                $stmt_check = $koneksi->prepare("SELECT COUNT(*) FROM users WHERE username = :username");
-                $stmt_check->execute([':username' => $_POST['username']]);
-                if ($stmt_check->fetchColumn() > 0) {
-                    $message = '<div class="alert alert-danger">Username sudah digunakan!</div>';
-                } else {
-                    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-                    $stmt = $koneksi->prepare("INSERT INTO users (username, password, nama_lengkap, role) VALUES (:username, :password, :nama, :role)");
-                    $stmt->execute([
-                        ':username' => $_POST['username'],
-                        ':password' => $password,
-                        ':nama' => $_POST['nama_lengkap'],
-                        ':role' => $_POST['role']
-                    ]);
-                    $message = '<div class="alert alert-success">Data akun berhasil ditambahkan!</div>';
-                }
-            } elseif ($_POST['action'] == 'edit') {
-                if (!empty($_POST['password'])) {
-                    // Update dengan password baru
-                    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-                    $stmt = $koneksi->prepare("UPDATE users SET username=:username, password=:password, nama_lengkap=:nama, role=:role WHERE id=:id");
-                    $stmt->execute([
-                        ':username' => $_POST['username'],
-                        ':password' => $password,
-                        ':nama' => $_POST['nama_lengkap'],
-                        ':role' => $_POST['role'],
-                        ':id' => $_POST['id']
-                    ]);
-                } else {
-                    // Update tanpa password
-                    $stmt = $koneksi->prepare("UPDATE users SET username=:username, nama_lengkap=:nama, role=:role WHERE id=:id");
-                    $stmt->execute([
-                        ':username' => $_POST['username'],
-                        ':nama' => $_POST['nama_lengkap'],
-                        ':role' => $_POST['role'],
-                        ':id' => $_POST['id']
-                    ]);
-                }
-                $message = '<div class="alert alert-success">Data akun berhasil diupdate!</div>';
-            } elseif ($_POST['action'] == 'delete') {
-                // Prevent self-delete
-                if ($_POST['id'] == $_SESSION['user_id']) {
-                    $message = '<div class="alert alert-danger">Anda tidak dapat menghapus akun Anda sendiri!</div>';
-                } else {
-                    $stmt = $koneksi->prepare("DELETE FROM users WHERE id=:id");
-                    $stmt->execute([':id' => $_POST['id']]);
-                    $message = '<div class="alert alert-success">Data akun berhasil dihapus!</div>';
-                }
-            }
-        } catch (PDOException $e) {
-            $message = '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
-        }
-    }
+// Get current user data
+$stmt = $koneksi->prepare("SELECT * FROM users WHERE id = :id");
+$stmt->execute([':id' => $_SESSION['user_id']]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    // Should not happen if logged in
+    session_destroy();
+    header("Location: index.php");
+    exit;
 }
 
-// Fetch Data Users
-$stmt = $koneksi->query("SELECT * FROM users ORDER BY role ASC, username ASC");
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Handle Profile Update
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    try {
+        if (!empty($_POST['password'])) {
+            // Update dengan password baru
+            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+            $stmt = $koneksi->prepare("UPDATE users SET username=:username, password=:password, nama_lengkap=:nama WHERE id=:id");
+            $stmt->execute([
+                ':username' => $_POST['username'],
+                ':password' => $password,
+                ':nama' => $_POST['nama_lengkap'],
+                ':id' => $_SESSION['user_id']
+            ]);
+        } else {
+            // Update tanpa password
+            $stmt = $koneksi->prepare("UPDATE users SET username=:username, nama_lengkap=:nama WHERE id=:id");
+            $stmt->execute([
+                ':username' => $_POST['username'],
+                ':nama' => $_POST['nama_lengkap'],
+                ':id' => $_SESSION['user_id']
+            ]);
+        }
+        
+        // Update session data
+        $_SESSION['nama_lengkap'] = $_POST['nama_lengkap'];
+        
+        // Refresh user data
+        $stmt = $koneksi->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt->execute([':id' => $_SESSION['user_id']]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $message = '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>Profile berhasil diperbarui!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
+    } catch (PDOException $e) {
+        $message = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>Error: ' . $e->getMessage() . '
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Akun - PTPN I Regional 3</title>
+    <title>Edit Profile - PTPN I Regional 3</title>
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -108,7 +99,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <ul class="collapse show sidebar-submenu" id="submenuDataMaster">
                     <li><a href="barang.php"><i class="fas fa-box-open" style="font-size: 0.9em;"></i> Barang</a></li>
                     <li><a href="afdeling.php"><i class="fas fa-building" style="font-size: 0.9em;"></i> Afdeling</a></li>
-                    <li><a href="akun.php" class="active"><i class="fas fa-users-cog" style="font-size: 0.9em;"></i> Akun</a></li>
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin'): ?>
+                    <li><a href="akun.php" class="active"><i class="fas fa-user-edit" style="font-size: 0.9em;"></i> Edit Profile</a></li>
+                    <?php endif; ?>
                 </ul>
             </li>
 
@@ -158,211 +151,46 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- Content Header -->
         <div class="mb-4">
             <div class="p-3 rounded text-white" style="background: #2e7d32;">
-                <h4 class="m-0 fw-bold"><i class="fas fa-users-cog me-2"></i> Data Akun Pengguna</h4>
+                <h4 class="m-0 fw-bold"><i class="fas fa-user-edit me-2"></i> Edit Profile</h4>
             </div>
         </div>
 
-        <!-- Data Table -->
-        <div class="table-container">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                    <i class="fas fa-plus"></i> Tambah Akun
-                </button>
-                <div class="d-flex gap-2">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Cari user...">
+        <!-- Profile Edit Form -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
+                                <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" value="<?php echo htmlspecialchars($user['nama_lengkap']); ?>" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Password Baru <small class="text-muted">(Kosongkan jika tidak ingin mengubah)</small></label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan password baru">
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-success"><i class="fas fa-save me-2"></i> Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover">
-                    <thead class="table-success">
-                        <tr>
-                            <th width="5%">No</th>
-                            <th>Username</th>
-                            <th>Nama Lengkap</th>
-                            <th>Role</th>
-                            <th width="15%">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <?php $no = 1; foreach ($users as $row): ?>
-                        <tr>
-                            <td class="text-center"><?php echo $no++; ?></td>
-                            <td><?php echo $row['username']; ?></td>
-                            <td><?php echo $row['nama_lengkap']; ?></td>
-                            <td class="text-center">
-                                <span class="badge <?php echo $row['role'] == 'admin' ? 'bg-danger' : 'bg-primary'; ?>">
-                                    <?php echo ucfirst($row['role']); ?>
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <button class="btn btn-warning btn-sm btn-edit" 
-                                    data-id="<?php echo $row['id']; ?>"
-                                    data-username="<?php echo $row['username']; ?>"
-                                    data-nama="<?php echo $row['nama_lengkap']; ?>"
-                                    data-role="<?php echo $row['role']; ?>"
-                                    data-bs-toggle="modal" data-bs-target="#editModal">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <?php if ($row['id'] != $_SESSION['user_id']): ?>
-                                <button class="btn btn-danger btn-sm btn-delete" 
-                                    data-id="<?php echo $row['id']; ?>" 
-                                    data-nama="<?php echo $row['username']; ?>"
-                                    data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
         </div>
 
-    </div>
-
-    <!-- Add Modal -->
-    <div class="modal fade" id="addModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Tambah Akun</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" name="action" value="add">
-                        <div class="mb-3">
-                            <label class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Nama Lengkap</label>
-                            <input type="text" name="nama_lengkap" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Role</label>
-                            <select name="role" class="form-select" required>
-                                <option value="user">User</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-success">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title">Edit Akun</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" name="action" value="edit">
-                        <input type="hidden" name="id" id="edit_id">
-                        <div class="mb-3">
-                            <label class="form-label">Username</label>
-                            <input type="text" name="username" id="edit_username" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Password (Kosongkan jika tidak diubah)</label>
-                            <input type="password" name="password" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Nama Lengkap</label>
-                            <input type="text" name="nama_lengkap" id="edit_nama" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Role</label>
-                            <select name="role" id="edit_role" class="form-select" required>
-                                <option value="user">User</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Hapus Akun</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="id" id="delete_id">
-                        <p>Apakah Anda yakin ingin menghapus akun <strong id="delete_nama"></strong>?</p>
-                        <small class="text-danger">Tindakan ini tidak dapat dibatalkan.</small>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-danger">Hapus</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <!-- Custom JS for Sidebar Toggle -->
     <script>
-        // Toggle Sidebar
         document.getElementById('sidebarToggle').addEventListener('click', function() {
             document.querySelector('.sidebar').classList.toggle('active');
             document.querySelector('.main-content').classList.toggle('active');
-        });
-
-        // Search Function
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            let filter = this.value.toLowerCase();
-            let rows = document.querySelectorAll('#tableBody tr');
-            rows.forEach(row => {
-                let text = row.innerText.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
-            });
-        });
-
-        // Edit Modal Handler
-        document.querySelectorAll('.btn-edit').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('edit_id').value = this.dataset.id;
-                document.getElementById('edit_username').value = this.dataset.username;
-                document.getElementById('edit_nama').value = this.dataset.nama;
-                document.getElementById('edit_role').value = this.dataset.role;
-            });
-        });
-
-        // Delete Modal Handler
-        document.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('delete_id').value = this.dataset.id;
-                document.getElementById('delete_nama').innerText = this.dataset.nama;
-            });
         });
     </script>
 </body>

@@ -82,7 +82,7 @@ $afdelings = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <li><a href="barang.php"><i class="fas fa-box-open" style="font-size: 0.9em;"></i> Barang</a></li>
                     <li><a href="afdeling.php" class="active"><i class="fas fa-building" style="font-size: 0.9em;"></i> Afdeling</a></li>
                     <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin'): ?>
-                    <li><a href="akun.php"><i class="fas fa-users-cog" style="font-size: 0.9em;"></i> Akun</a></li>
+                    <li><a href="akun.php"><i class="fas fa-user-edit" style="font-size: 0.9em;"></i> Edit Profile</a></li>
                     <?php endif; ?>
                 </ul>
             </li>

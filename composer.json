@@ -1,0 +1,15 @@
+{
+    "name": "karet/laporan",
+    "description": "Laporan Export",
+    "type": "project",
+    "require": {
+        "mpdf/mpdf": "*",
+        "phpoffice/phpspreadsheet": "*"
+    },
+    "authors": [
+        {
+            "name": "Admin",
+            "email": "admin@example.com"
+        }
+    ]
+}

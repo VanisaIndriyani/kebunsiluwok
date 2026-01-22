@@ -1,0 +1,322 @@
+/* Reset & Basic Setup */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden; /* Mencegah scroll saat animasi */
+}
+
+/* Background Image Area */
+.bg-image {
+    background-image: url('../img/bg.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    position: relative;
+    z-index: 0;
+}
+
+/* Overlay Gelap */
+.bg-overlay {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 50, 0, 0.4) 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden; /* Ensure shapes don't cause scroll */
+}
+
+/* Decorative Shapes (Blobs) */
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(50px);
+    z-index: -1;
+    opacity: 0.6;
+    animation: float 10s infinite ease-in-out alternate;
+}
+
+.shape-1 {
+    width: 300px;
+    height: 300px;
+    background: #4CAF50;
+    top: 10%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 250px;
+    height: 250px;
+    background: #FFC107;
+    bottom: 15%;
+    right: 20%;
+    animation-delay: -5s;
+}
+
+.shape-3 {
+    width: 150px;
+    height: 150px;
+    background: #2196F3;
+    top: 40%;
+    left: 70%;
+    animation-delay: -2s;
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    100% {
+        transform: translate(20px, 40px) rotate(10deg);
+    }
+}
+
+/* Login Card Glassmorphism dengan Animasi */
+.login-card {
+    background: rgba(255, 255, 255, 0.1); /* Lebih bening */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 25px;
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    color: white;
+    
+    /* Animasi Masuk */
+    animation: fadeInUp 1s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+    position: relative;
+    z-index: 10;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Logo & Header */
+.logo-area {
+    margin-bottom: 2rem;
+}
+
+.logo-img {
+    width: 100px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.company-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.unit-name {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(to right, #ffd700, #ffecb3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0px 4px 8px rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    margin-top: 5px;
+    margin-bottom: 35px;
+    letter-spacing: 1px;
+}
+
+/* Form Elements */
+.input-group-custom {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.input-group-text-custom {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: none;
+    color: #fff;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    padding-left: 20px;
+    width: 50px;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.form-control-custom {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-left: none;
+    color: white !important;
+    padding: 14px 20px;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control-custom:focus {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.form-control-custom::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Input Group Hover/Focus Effects */
+.input-group:hover .input-group-text-custom,
+.input-group:hover .form-control-custom {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.input-group:focus-within .input-group-text-custom {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2) inset; 
+    /* box-shadow doesn't work well on input-group-text with inset, removing inset might be better or adjusting */
+    box-shadow: none;
+}
+
+
+/* Checkbox */
+.form-check-custom {
+    text-align: left;
+    margin-bottom: 30px;
+    padding-left: 35px;
+}
+
+.form-check-input {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    width: 1.3em;
+    height: 1.3em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.form-check-input:checked {
+    background-color: #ffd700;
+    border-color: #ffd700;
+}
+
+.form-check-input:checked[type=checkbox] {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+}
+
+.form-check-label {
+    cursor: pointer;
+    font-size: 0.95rem;
+    user-select: none;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Button */
+.btn-login {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%); /* Fresh Green Gradient */
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-login::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #96c93d 0%, #00b09b 100%);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+.btn-login:hover::before {
+    opacity: 1;
+}
+
+.btn-login:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(0, 176, 155, 0.4);
+}
+
+.btn-login:active {
+    transform: translateY(2px);
+    box-shadow: 0 5px 10px rgba(0, 176, 155, 0.3);
+}
+
+/* Footer Link */
+.forgot-password {
+    display: inline-block;
+    margin-top: 25px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    border-bottom: 1px solid transparent;
+}
+
+.forgot-password:hover {
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Footer Copyright */
+.footer-copy {
+    margin-top: 40px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 1px;
+}
+
+/* Responsive Tweaks */
+@media (max-width: 576px) {
+    .login-card {
+        padding: 2.5rem 1.5rem;
+        max-width: 90%;
+    }
+    
+    .unit-name {
+        font-size: 1.6rem;
+    }
+    
+    .shape {
+        opacity: 0.4;
+    }
+}

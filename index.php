@@ -109,12 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
 
                     <!-- Remember Me -->
-                    <div class="form-check form-check-custom">
-                        <input class="form-check-input" type="checkbox" value="" id="ingatSaya">
-                        <label class="form-check-label text-white" for="ingatSaya">
-                            Ingat saya di perangkat ini
-                        </label>
-                    </div>
+                  
 
                     <!-- Button -->
                     <button type="submit" class="btn-login">

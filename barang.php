@@ -14,21 +14,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action'])) {
         try {
             if ($_POST['action'] == 'add') {
-                $stmt = $koneksi->prepare("INSERT INTO barang (kode_barang, nama_barang, satuan, stok) VALUES (:kode, :nama, :satuan, :stok)");
-                $stmt->execute([
-                    ':kode' => $_POST['kode_barang'],
-                    ':nama' => $_POST['nama_barang'],
-                    ':satuan' => $_POST['satuan'],
-                    ':stok' => $_POST['stok']
-                ]);
-                $message = '<div class="alert alert-success">Data barang berhasil ditambahkan!</div>';
-            } elseif ($_POST['action'] == 'edit') {
-                $stmt = $koneksi->prepare("UPDATE barang SET kode_barang=:kode, nama_barang=:nama, satuan=:satuan, stok=:stok WHERE id=:id");
+                $stmt = $koneksi->prepare("INSERT INTO barang (kode_barang, nama_barang, satuan, stok, no_kotak_laci, stok_min) VALUES (:kode, :nama, :satuan, :stok, :laci, :min)");
                 $stmt->execute([
                     ':kode' => $_POST['kode_barang'],
                     ':nama' => $_POST['nama_barang'],
                     ':satuan' => $_POST['satuan'],
                     ':stok' => $_POST['stok'],
+                    ':laci' => $_POST['no_kotak_laci'],
+                    ':min' => $_POST['stok_min']
+                ]);
+                $message = '<div class="alert alert-success">Data barang berhasil ditambahkan!</div>';
+            } elseif ($_POST['action'] == 'edit') {
+                $stmt = $koneksi->prepare("UPDATE barang SET kode_barang=:kode, nama_barang=:nama, satuan=:satuan, stok=:stok, no_kotak_laci=:laci, stok_min=:min WHERE id=:id");
+                $stmt->execute([
+                    ':kode' => $_POST['kode_barang'],
+                    ':nama' => $_POST['nama_barang'],
+                    ':satuan' => $_POST['satuan'],
+                    ':stok' => $_POST['stok'],
+                    ':laci' => $_POST['no_kotak_laci'],
+                    ':min' => $_POST['stok_min'],
                     ':id' => $_POST['id']
                 ]);
                 $message = '<div class="alert alert-success">Data barang berhasil diupdate!</div>';
@@ -164,6 +168,7 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
                             <th>Satuan</th>
+                            <th>No. Laci</th>
                             <th>Stok Saat Ini</th>
                             <th width="15%">Aksi</th>
                         </tr>
@@ -175,6 +180,7 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?php echo $row['kode_barang']; ?></td>
                             <td><?php echo $row['nama_barang']; ?></td>
                             <td><?php echo $row['satuan']; ?></td>
+                            <td><?php echo $row['no_kotak_laci'] ?? '-'; ?></td>
                             <td class="text-center"><?php echo number_format($row['stok'], 0); ?></td>
                             <td class="text-center">
                                 <button class="btn btn-warning btn-sm btn-edit" 
@@ -183,6 +189,8 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     data-nama="<?php echo $row['nama_barang']; ?>"
                                     data-satuan="<?php echo $row['satuan']; ?>"
                                     data-stok="<?php echo $row['stok']; ?>"
+                                    data-laci="<?php echo $row['no_kotak_laci'] ?? ''; ?>"
+                                    data-min="<?php echo $row['stok_min'] ?? '0'; ?>"
                                     data-bs-toggle="modal" data-bs-target="#editModal">
                                     <i class="fas fa-edit"></i>
                                 </button>
@@ -233,6 +241,16 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="Meter">Meter</option>
                             </select>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">No. Kotak Laci</label>
+                                <input type="text" name="no_kotak_laci" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Stok Minimum</label>
+                                <input type="number" step="0.01" name="stok_min" class="form-control" value="0">
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Stok Awal</label>
                             <input type="number" step="0.01" name="stok" class="form-control" value="0" required>
@@ -278,6 +296,16 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="Pack">Pack</option>
                                 <option value="Meter">Meter</option>
                             </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">No. Kotak Laci</label>
+                                <input type="text" name="no_kotak_laci" id="edit_laci" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Stok Minimum</label>
+                                <input type="number" step="0.01" name="stok_min" id="edit_min" class="form-control">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Stok</label>
@@ -343,9 +371,11 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 document.getElementById('edit_id').value = this.dataset.id;
                 document.getElementById('edit_kode').value = this.dataset.kode;
                 document.getElementById('edit_nama').value = this.dataset.nama;
-                document.getElementById('edit_kategori').value = this.dataset.kategori;
+                // document.getElementById('edit_kategori').value = this.dataset.kategori; // Removed in previous code, just checking
                 document.getElementById('edit_satuan').value = this.dataset.satuan;
                 document.getElementById('edit_stok').value = this.dataset.stok;
+                document.getElementById('edit_laci').value = this.dataset.laci;
+                document.getElementById('edit_min').value = this.dataset.min;
             });
         });
 

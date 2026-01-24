@@ -97,51 +97,57 @@ if ($type == 'excel') {
     $sheet->setTitle('Kartu Gudang');
 
     // Header Info
-    $sheet->setCellValue('A1', 'KARTU GUDANG BARANG');
-    $sheet->setCellValue('A2', 'PT. PERKEBUNAN NUSANTARA I REGIONAL 3 KEBUN SILUWOK');
+    $sheet->setCellValue('A1', 'PT. PERKEBUNAN NUSANTARA I REGIONAL 3 KEBUN SILUWOK');
+    $sheet->setCellValue('A2', 'KARTU GUDANG AFDELING');
     
-    $sheet->setCellValue('A4', 'Afdeling: ' . ($info_afdeling ? $info_afdeling['nama_afdeling'] : '-'));
-    $sheet->setCellValue('E4', 'Kode Barang: ' . ($info_barang ? $info_barang['kode_barang'] : '-'));
-    
-    $sheet->setCellValue('A5', 'Nama Barang: ' . ($info_barang ? $info_barang['nama_barang'] : '-'));
-    $sheet->setCellValue('E5', 'Periode: ' . $periode_text);
-    
-    $sheet->setCellValue('A6', 'Satuan: ' . ($info_barang ? $info_barang['satuan'] : '-'));
-
     $sheet->mergeCells('A1:I1');
     $sheet->mergeCells('A2:I2');
     
     $sheet->getStyle('A1:A2')->getFont()->setBold(true);
     $sheet->getStyle('A1:A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-    // Table Header
-    $sheet->setCellValue('A8', 'No. Bukti Penerimaan');
-    $sheet->setCellValue('B8', 'Tanggal');
-    $sheet->setCellValue('C8', 'Nama Mandor yang mengambil');
-    $sheet->setCellValue('D8', 'Dipakai untuk diterima dari');
-    $sheet->setCellValue('E8', 'Banyaknya');
-    $sheet->setCellValue('E9', 'Masuk');
-    $sheet->setCellValue('F9', 'Keluar');
-    $sheet->setCellValue('G9', 'Sisa');
-    $sheet->setCellValue('H8', 'Keterangan');
-    $sheet->setCellValue('I8', 'Tanda Tangan Asisten Afd./Wakil Asisten Afd');
+    // Header Data
+    $sheet->setCellValue('A4', 'Afdeling: ' . ($info_afdeling ? $info_afdeling['nama_afdeling'] : '-'));
+    $sheet->setCellValue('A5', 'Nama Barang: ' . ($info_barang ? $info_barang['nama_barang'] : '-'));
+    $sheet->setCellValue('A6', 'Nomor Barang: ' . ($info_barang ? $info_barang['kode_barang'] : '-'));
+    $sheet->setCellValue('A7', 'Satuan: ' . ($info_barang ? $info_barang['satuan'] : '-'));
 
-    $sheet->mergeCells('A8:A9');
-    $sheet->mergeCells('B8:B9');
-    $sheet->mergeCells('C8:C9');
-    $sheet->mergeCells('D8:D9');
-    $sheet->mergeCells('E8:G8');
-    $sheet->mergeCells('H8:H9');
-    $sheet->mergeCells('I8:I9');
+    $sheet->setCellValue('F4', 'No. Kotak Laci: ' . ($info_barang['no_kotak_laci'] ?? '-'));
+    $sheet->setCellValue('F5', 'Persediaan Minimum: ' . ($info_barang['stok_min'] ?? '0'));
     
-    $sheet->getStyle('A8:I9')->getFont()->setBold(true);
-    $sheet->getStyle('A8:I9')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->getStyle('A8:I9')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-    $sheet->getStyle('A8:I9')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-    $sheet->getStyle('A8:I9')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
+    // Tanggal di pojok kanan
+    $sheet->setCellValue('I4', date('M-y', strtotime($selected_bulan)));
+    $sheet->getStyle('I4')->getFont()->setBold(true);
+    $sheet->getStyle('I4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
+    // Table Header
+    $sheet->setCellValue('A9', 'No. Bukti Penerimaan');
+    $sheet->setCellValue('B9', 'Tanggal');
+    $sheet->setCellValue('C9', 'Nama Mandor yang mengambil');
+    $sheet->setCellValue('D9', 'Dipakai untuk diterima dari');
+    $sheet->setCellValue('E9', 'Banyaknya');
+    $sheet->setCellValue('E10', 'Masuk');
+    $sheet->setCellValue('F10', 'Keluar');
+    $sheet->setCellValue('G10', 'Sisa');
+    $sheet->setCellValue('H9', 'Keterangan');
+    $sheet->setCellValue('I9', 'Tanda Tangan Asisten Afd./Wakil Asisten Afd');
+
+    $sheet->mergeCells('A9:A10');
+    $sheet->mergeCells('B9:B10');
+    $sheet->mergeCells('C9:C10');
+    $sheet->mergeCells('D9:D10');
+    $sheet->mergeCells('E9:G9');
+    $sheet->mergeCells('H9:H10');
+    $sheet->mergeCells('I9:I10');
+    
+    $sheet->getStyle('A9:I10')->getFont()->setBold(true);
+    $sheet->getStyle('A9:I10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->getStyle('A9:I10')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+    $sheet->getStyle('A9:I10')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+    $sheet->getStyle('A9:I10')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
 
     // Saldo Awal Row
-    $rowNum = 10;
+    $rowNum = 11;
     $sheet->setCellValue('A' . $rowNum, '');
     $sheet->setCellValue('B' . $rowNum, '');
     $sheet->setCellValue('C' . $rowNum, '');
@@ -208,8 +214,8 @@ if ($type == 'excel') {
 
     // Styling Data Table
     $lastRow = $rowNum;
-    $sheet->getStyle('A10:I' . $lastRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-    $sheet->getStyle('A10:B' . ($lastRow-1))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->getStyle('A11:I' . $lastRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+    $sheet->getStyle('A11:B' . ($lastRow-1))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
     
     // Auto Size Columns
     foreach (range('A', 'I') as $col) {
@@ -230,26 +236,36 @@ if ($type == 'excel') {
     
     $html = '
     <div style="text-align: center; margin-bottom: 20px;">
-        <h3 style="margin: 0;">KARTU GUDANG BARANG</h3>
-        <h4 style="margin: 5px 0;">PT. PERKEBUNAN NUSANTARA I REGIONAL 3 KEBUN SILUWOK</h4>
+        <h3 style="margin: 0;">PT. PERKEBUNAN NUSANTARA I REGIONAL 3 KEBUN SILUWOK</h3>
+        <h4 style="margin: 5px 0;">KARTU GUDANG AFDELING</h4>
     </div>
     
-    <table style="width: 100%; margin-bottom: 20px; font-size: 10pt;">
+    <table style="width: 100%; margin-bottom: 20px; font-size: 10pt; border-collapse: collapse;">
         <tr>
-            <td width="15%"><strong>Afdeling</strong></td>
-            <td width="35%">: ' . ($info_afdeling ? $info_afdeling['nama_afdeling'] : '-') . '</td>
-            <td width="15%"><strong>Kode Barang</strong></td>
-            <td width="35%">: ' . ($info_barang ? $info_barang['kode_barang'] : '-') . '</td>
+            <td width="20%"><strong>Afdeling</strong></td>
+            <td width="30%">: ' . ($info_afdeling ? $info_afdeling['nama_afdeling'] : '-') . '</td>
+            <td width="20%"><strong>No. Kotak Laci</strong></td>
+            <td width="20%">: ' . ($info_barang['no_kotak_laci'] ?? '-') . '</td>
+            <td width="10%" style="text-align: right; font-weight: bold;">' . date('M-y', strtotime($selected_bulan)) . '</td>
         </tr>
         <tr>
             <td><strong>Nama Barang</strong></td>
             <td>: ' . ($info_barang ? $info_barang['nama_barang'] : '-') . '</td>
-            <td><strong>Periode</strong></td>
-            <td>: ' . $periode_text . '</td>
+            <td><strong>Persediaan Minimum</strong></td>
+            <td>: ' . ($info_barang['stok_min'] ?? '0') . '</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><strong>Nomor Barang</strong></td>
+            <td>: ' . ($info_barang ? $info_barang['kode_barang'] : '-') . '</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
             <td><strong>Satuan</strong></td>
             <td>: ' . ($info_barang ? $info_barang['satuan'] : '-') . '</td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>

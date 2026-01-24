@@ -488,51 +488,56 @@ if ($selected_afdeling && $selected_barang) {
                     </form>
 
                     <?php if ($info_barang && $info_afdeling): ?>
-                    <div class="row g-4 pt-3 border-top">
-                        <div class="col-md-3 col-6">
-                            <div class="d-flex align-items-center p-2 rounded hover-bg">
-                                <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3 text-success shadow-sm">
-                                    <i class="fas fa-cube fa-lg"></i>
-                                </div>
-                                <div>
-                                    <div class="info-label">Nama Barang</div>
-                                    <div class="info-value text-dark"><?php echo $info_barang['nama_barang']; ?></div>
-                                </div>
-                            </div>
+                    <div class="mt-4 border-top pt-4">
+                        <div class="text-center mb-4">
+                            <h5 class="fw-bold mb-1">PT. PERKEBUNAN NUSANTARA I REGIONAL 3 KEBUN SILUWOK</h5>
+                            <h6 class="fw-bold text-muted">KARTU GUDANG AFDELING</h6>
                         </div>
-                        <div class="col-md-3 col-6">
-                            <div class="d-flex align-items-center p-2 rounded hover-bg">
-                                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3 text-primary shadow-sm">
-                                    <i class="fas fa-barcode fa-lg"></i>
-                                </div>
-                                <div>
-                                    <div class="info-label">Kode Barang</div>
-                                    <div class="info-value text-dark"><?php echo $info_barang['kode_barang']; ?></div>
-                                </div>
+
+                        <div class="row g-0 border rounded-3 overflow-hidden">
+                            <!-- Left Side -->
+                            <div class="col-md-7 border-end">
+                                <table class="table table-borderless mb-0">
+                                    <tr>
+                                        <td width="30%" class="fw-bold text-muted ps-4">Afdeling</td>
+                                        <td width="5%">:</td>
+                                        <td class="fw-bold text-dark"><?php echo $info_afdeling['nama_afdeling']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted ps-4">Nama Barang</td>
+                                        <td>:</td>
+                                        <td class="fw-bold text-primary"><?php echo $info_barang['nama_barang']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted ps-4">Nomor Barang</td>
+                                        <td>:</td>
+                                        <td class="fw-bold"><?php echo $info_barang['kode_barang']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted ps-4">Satuan</td>
+                                        <td>:</td>
+                                        <td class="fw-bold"><?php echo $info_barang['satuan']; ?></td>
+                                    </tr>
+                                </table>
                             </div>
-                        </div>
-                        <div class="col-md-3 col-6">
-                            <div class="d-flex align-items-center p-2 rounded hover-bg">
-                                <div class="bg-warning bg-opacity-10 p-3 rounded-circle me-3 text-warning shadow-sm">
-                                    <i class="fas fa-balance-scale fa-lg"></i>
-                                </div>
-                                <div>
-                                    <div class="info-label">Satuan</div>
-                                    <div class="info-value text-dark"><?php echo $info_barang['satuan']; ?></div>
-                                </div>
+
+                            <!-- Right Side -->
+                            <div class="col-md-5 bg-light">
+                                <table class="table table-borderless mb-0 h-100">
+                                    <tr>
+                                        <td width="40%" class="fw-bold text-muted ps-4">No. Kotak laci</td>
+                                        <td width="5%">:</td>
+                                        <td class="fw-bold"><?php echo $info_barang['no_kotak_laci'] ?? '-'; ?></td>
+                                        <td class="text-end pe-4 fw-bold text-primary"><?php echo date('M-y', strtotime($selected_bulan)); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted ps-4">Persediaan Minimum</td>
+                                        <td>:</td>
+                                        <td class="fw-bold text-danger"><?php echo $info_barang['stok_min'] ?? '0'; ?></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
                             </div>
-                        </div>
-                        <div class="col-md-3 col-6">
-                            <div class="d-flex align-items-center p-2 rounded hover-bg">
-                                <div class="bg-info bg-opacity-10 p-3 rounded-circle me-3 text-info shadow-sm">
-                                    <i class="far fa-calendar-alt fa-lg"></i>
-                                </div>
-                                <div>
-                                    <div class="info-label">Periode</div>
-                                    <div class="info-value text-dark"><?php echo date('F Y', strtotime($selected_bulan)); ?></div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <?php endif; ?>
                 </div>

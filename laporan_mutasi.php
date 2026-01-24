@@ -59,7 +59,7 @@ foreach ($data_mutasi as $row) {
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo filemtime('assets/css/dashboard.css'); ?>">
 </head>
 <body>
 
@@ -112,17 +112,17 @@ foreach ($data_mutasi as $row) {
     <!-- Main Content -->
     <div class="main-content">
         <!-- Top Navbar -->
-        <div class="top-navbar">
+        <div class="top-navbar animate-fade-in">
             <div class="d-flex align-items-center">
-                <button class="btn btn-light d-md-none me-3" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-                <div class="company-title">
-                    <img src="assets/img/log.png" alt="Logo" style="height: 30px; margin-right: 10px;">
-                    PT. PERKEBUNAN NUSANTARA I REGIONAL 3 KEBUN SILUWOK
+                <button class="btn btn-light d-lg-none me-3" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <div class="d-none d-md-block">
+                    <h5 class="m-0 fw-bold text-success">Laporan Mutasi Stok</h5>
+                    <p class="m-0 text-muted" style="font-size: 0.85rem;">Rekapitulasi pergerakan stok barang</p>
                 </div>
             </div>
             <div class="user-profile">
                 <div class="text-end me-2 d-none d-sm-block">
-                    <div style="font-weight: 600; font-size: 0.9rem;"><?php echo $_SESSION['nama_lengkap']; ?></div>
+                    <div class="fw-bold text-dark"><?php echo $_SESSION['nama_lengkap']; ?></div>
                     <div style="font-size: 0.75rem; color: #777;"><?php echo ucfirst($_SESSION['role']); ?></div>
                 </div>
                 <div class="user-avatar">
@@ -132,10 +132,10 @@ foreach ($data_mutasi as $row) {
         </div>
 
         <!-- Welcome Banner -->
-        <div class="welcome-banner mb-4">
+        <div class="welcome-banner animate-fade-in delay-1 mb-4" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h4 class="mb-1 text-white">Laporan Mutasi Stok</h4>
+                    <h4 class="fw-bold mb-2 text-white">Laporan Mutasi Stok</h4>
                     <p class="mb-0 text-white-50">Rekapitulasi pergerakan stok barang (Awal, Masuk, Keluar, Akhir).</p>
                 </div>
                 <div class="col-md-4 text-end d-none d-md-block">
@@ -146,105 +146,90 @@ foreach ($data_mutasi as $row) {
 
         <!-- Info Cards -->
         <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="card card-gradient-blue text-white h-100 border-0 shadow-sm">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="info-detail-label">Total Barang</span>
-                                <span class="info-detail-value"><?php echo $total_items; ?> Item</span>
-                                <div class="mt-1 small opacity-75">Data dalam laporan</div>
-                            </div>
-                            <i class="fas fa-boxes fa-2x opacity-25"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4 animate-fade-in delay-2">
+                <div class="stats-card bg-gradient-4">
+                    <div class="stats-icon"><i class="fas fa-boxes"></i></div>
+                    <div class="stats-label">Total Barang</div>
+                    <div class="stats-value"><?php echo $total_items; ?></div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;">Data dalam laporan</div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card card-gradient-green text-white h-100 border-0 shadow-sm">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="info-detail-label">Total Masuk</span>
-                                <span class="info-detail-value"><?php echo number_format($total_masuk_periode, 2); ?></span>
-                                <div class="mt-1 small opacity-75">Periode Ini</div>
-                            </div>
-                            <i class="fas fa-arrow-down fa-2x opacity-25"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4 animate-fade-in delay-2">
+                <div class="stats-card bg-gradient-2">
+                    <div class="stats-icon"><i class="fas fa-arrow-down"></i></div>
+                    <div class="stats-label">Total Masuk</div>
+                    <div class="stats-value"><?php echo number_format($total_masuk_periode, 2); ?></div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;">Periode Ini</div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card card-gradient-orange text-white h-100 border-0 shadow-sm">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="info-detail-label">Total Keluar</span>
-                                <span class="info-detail-value"><?php echo number_format($total_keluar_periode, 2); ?></span>
-                                <div class="mt-1 small opacity-75">Periode Ini</div>
-                            </div>
-                            <i class="fas fa-arrow-up fa-2x opacity-25"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4 animate-fade-in delay-2">
+                <div class="stats-card bg-gradient-3">
+                    <div class="stats-icon"><i class="fas fa-arrow-up"></i></div>
+                    <div class="stats-label">Total Keluar</div>
+                    <div class="stats-value"><?php echo number_format($total_keluar_periode, 2); ?></div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;">Periode Ini</div>
                 </div>
             </div>
         </div>
 
         <!-- Filter Section -->
-        <div class="card filter-card border-0 shadow-sm mb-4">
-            <div class="card-body p-3">
-                <form method="GET" class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label small text-muted fw-bold text-uppercase">Periode Tanggal</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-calendar-alt text-muted"></i></span>
-                            <input type="date" name="start_date" class="form-control border-start-0 bg-light" value="<?php echo $start_date; ?>" required>
-                            <span class="input-group-text bg-light border-start-0 border-end-0">s/d</span>
-                            <input type="date" name="end_date" class="form-control border-start-0 bg-light" value="<?php echo $end_date; ?>" required>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm"><i class="fas fa-filter me-1"></i> Filter</button>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <div class="btn-group shadow-sm">
-                            <a href="export_mutasi.php?start_date=<?php echo $start_date; ?>&end_date=<?php echo $end_date; ?>&type=pdf" target="_blank" class="btn btn-light text-danger fw-bold">
-                                <i class="fas fa-file-pdf me-1"></i> PDF
-                            </a>
-                            <a href="export_mutasi.php?start_date=<?php echo $start_date; ?>&end_date=<?php echo $end_date; ?>&type=excel" target="_blank" class="btn btn-light text-success fw-bold">
-                                <i class="fas fa-file-excel me-1"></i> Excel
-                            </a>
-                        </div>
-                    </div>
-                </form>
+        <div class="glass-card animate-fade-in delay-3 mb-4">
+            <div class="section-title">
+                <i class="fas fa-filter"></i> Filter Periode & Export
             </div>
+            <form method="GET" class="row g-3 align-items-center">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-calendar-alt text-muted"></i></span>
+                        <div class="form-floating">
+                            <input type="date" name="start_date" class="form-control border-start-0" id="startDate" value="<?php echo $start_date; ?>" required>
+                            <label for="startDate">Dari Tanggal</label>
+                        </div>
+                        <span class="input-group-text bg-white border-start-0 border-end-0">s/d</span>
+                        <div class="form-floating">
+                            <input type="date" name="end_date" class="form-control border-start-0" id="endDate" value="<?php echo $end_date; ?>" required>
+                            <label for="endDate">Sampai Tanggal</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary px-4 fw-bold"><i class="fas fa-search me-1"></i> Tampilkan</button>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="export_mutasi.php?start_date=<?php echo $start_date; ?>&end_date=<?php echo $end_date; ?>&type=excel" target="_blank" class="btn btn-success rounded-pill px-4 py-2 fw-bold">
+                            <i class="fas fa-file-excel me-2"></i> Excel
+                        </a>
+                        <a href="export_mutasi.php?start_date=<?php echo $start_date; ?>&end_date=<?php echo $end_date; ?>&type=pdf" target="_blank" class="btn btn-danger rounded-pill px-4 py-2 fw-bold">
+                            <i class="fas fa-print me-2"></i> Print PDF
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
 
         <!-- Data Table -->
-        <div class="card table-card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 py-3">
-                <h6 class="m-0 fw-bold text-primary"><i class="fas fa-list me-2"></i>Rincian Mutasi Stok (<?php echo date('d/m/Y', strtotime($start_date)) . ' - ' . date('d/m/Y', strtotime($end_date)); ?>)</h6>
+        <div class="glass-card animate-fade-in delay-4">
+            <div class="section-title mb-4">
+                <i class="fas fa-list"></i> Rincian Mutasi Stok <span class="text-muted fw-normal ms-2 small">(<?php echo date('d/m/Y', strtotime($start_date)) . ' - ' . date('d/m/Y', strtotime($end_date)); ?>)</span>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table id="mutasiTable" class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th rowspan="2" class="text-center py-3 text-secondary text-uppercase small fw-bold border-0" width="5%">No</th>
-                                <th rowspan="2" class="py-3 text-secondary text-uppercase small fw-bold border-0">Kode Barang</th>
-                                <th rowspan="2" class="py-3 text-secondary text-uppercase small fw-bold border-0">Nama Barang</th>
-                                <th rowspan="2" class="py-3 text-secondary text-uppercase small fw-bold border-0">Kategori</th>
-                                <th rowspan="2" class="text-center py-3 text-secondary text-uppercase small fw-bold border-0">Satuan</th>
-                                <th colspan="4" class="text-center py-2 text-secondary text-uppercase small fw-bold border-0 bg-light border-bottom">Pergerakan Stok</th>
-                            </tr>
-                            <tr>
-                                <th class="text-end py-2 text-secondary small fw-bold border-0">Awal</th>
-                                <th class="text-end py-2 text-success small fw-bold border-0">Masuk</th>
-                                <th class="text-end py-2 text-danger small fw-bold border-0">Keluar</th>
-                                <th class="text-end py-2 text-primary small fw-bold border-0">Akhir</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <div class="table-responsive">
+                <table id="mutasiTable" class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="text-center align-middle" width="5%">No</th>
+                            <th rowspan="2" class="align-middle">Kode Barang</th>
+                            <th rowspan="2" class="align-middle">Nama Barang</th>
+                            <th rowspan="2" class="align-middle">Kategori</th>
+                            <th rowspan="2" class="text-center align-middle">Satuan</th>
+                            <th colspan="4" class="text-center bg-light border-bottom">Pergerakan Stok</th>
+                        </tr>
+                        <tr>
+                            <th class="text-end small text-secondary">Awal</th>
+                            <th class="text-end small text-success">Masuk</th>
+                            <th class="text-end small text-danger">Keluar</th>
+                            <th class="text-end small text-primary">Akhir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                             <?php if (count($data_mutasi) > 0): ?>
                                 <?php $no = 1; foreach ($data_mutasi as $row): 
                                     $stok_akhir = $row['stok_awal'] + $row['masuk'] - $row['keluar'];
@@ -253,12 +238,12 @@ foreach ($data_mutasi as $row) {
                                     <td class="text-center text-muted"><?php echo $no++; ?></td>
                                     <td><span class="badge bg-light text-secondary border"><?php echo $row['kode_barang']; ?></span></td>
                                     <td class="fw-bold text-dark"><?php echo $row['nama_barang']; ?></td>
-                                    <td><span class="badge bg-info bg-opacity-10 text-info"><?php echo $row['kategori']; ?></span></td>
+                                    <td><span class="badge bg-info bg-opacity-10 text-info border border-info"><?php echo $row['kategori']; ?></span></td>
                                     <td class="text-center text-muted"><?php echo $row['satuan']; ?></td>
-                                    <td class="text-end text-secondary fw-medium"><?php echo number_format($row['stok_awal'], 2, ',', '.'); ?></td>
-                                    <td class="text-end text-success fw-medium"><?php echo number_format($row['masuk'], 2, ',', '.'); ?></td>
-                                    <td class="text-end text-danger fw-medium"><?php echo number_format($row['keluar'], 2, ',', '.'); ?></td>
-                                    <td class="text-end text-primary fw-bold bg-light"><?php echo number_format($stok_akhir, 2, ',', '.'); ?></td>
+                                    <td class="text-end text-secondary"><?php echo number_format($row['stok_awal'], 2, ',', '.'); ?></td>
+                                    <td class="text-end text-success fw-bold"><?php echo number_format($row['masuk'], 2, ',', '.'); ?></td>
+                                    <td class="text-end text-danger fw-bold"><?php echo number_format($row['keluar'], 2, ',', '.'); ?></td>
+                                    <td class="text-end text-primary fw-bold bg-primary bg-opacity-10"><?php echo number_format($stok_akhir, 2, ',', '.'); ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
@@ -274,37 +259,26 @@ foreach ($data_mutasi as $row) {
                         </tbody>
                         <tfoot class="bg-light fw-bold">
                             <tr>
-                                <td colspan="6" class="text-end text-secondary text-uppercase py-3">Total Periode Ini</td>
+                                <td colspan="6" class="text-end text-uppercase py-3">Total Periode Ini</td>
                                 <td class="text-end text-success py-3"><?php echo number_format($total_masuk_periode, 2, ',', '.'); ?></td>
                                 <td class="text-end text-danger py-3"><?php echo number_format($total_keluar_periode, 2, ',', '.'); ?></td>
-                                <td></td>
+                                <td class="bg-light"></td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
-        </div>
 
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- SheetJS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    
     <script>
         // Toggle Sidebar
         document.getElementById('sidebarToggle').addEventListener('click', function() {
             document.querySelector('.sidebar').classList.toggle('active');
             document.querySelector('.main-content').classList.toggle('active');
         });
-
-        // Export to Excel
-        function exportToExcel() {
-            const table = document.getElementById('mutasiTable');
-            const wb = XLSX.utils.table_to_book(table, {sheet: "Mutasi Stok"});
-            XLSX.writeFile(wb, 'Laporan_Mutasi_Stok_<?php echo $start_date; ?>_sd_<?php echo $end_date; ?>.xlsx');
-        }
     </script>
 </body>
 </html>

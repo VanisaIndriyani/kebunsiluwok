@@ -8,6 +8,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 // Cek Login
 if (!isset($_SESSION['user_id'])) {
@@ -114,85 +115,104 @@ if ($type == 'excel') {
     $sheet->getStyle('A1:A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
     // Table Header
-    $sheet->setCellValue('A8', 'No');
+    $sheet->setCellValue('A8', 'No. Bukti Penerimaan');
     $sheet->setCellValue('B8', 'Tanggal');
-    $sheet->setCellValue('C8', 'No. Bukti');
-    $sheet->setCellValue('D8', 'Nama Mandor');
-    $sheet->setCellValue('E8', 'Keterangan');
-    $sheet->setCellValue('F8', 'Banyaknya');
-    $sheet->setCellValue('F9', 'Masuk');
-    $sheet->setCellValue('G9', 'Keluar');
-    $sheet->setCellValue('H9', 'Sisa');
+    $sheet->setCellValue('C8', 'Nama Mandor yang mengambil');
+    $sheet->setCellValue('D8', 'Dipakai untuk diterima dari');
+    $sheet->setCellValue('E8', 'Banyaknya');
+    $sheet->setCellValue('E9', 'Masuk');
+    $sheet->setCellValue('F9', 'Keluar');
+    $sheet->setCellValue('G9', 'Sisa');
+    $sheet->setCellValue('H8', 'Keterangan');
+    $sheet->setCellValue('I8', 'Tanda Tangan Asisten Afd./Wakil Asisten Afd');
 
     $sheet->mergeCells('A8:A9');
     $sheet->mergeCells('B8:B9');
     $sheet->mergeCells('C8:C9');
     $sheet->mergeCells('D8:D9');
-    $sheet->mergeCells('E8:E9');
-    $sheet->mergeCells('F8:H8');
+    $sheet->mergeCells('E8:G8');
+    $sheet->mergeCells('H8:H9');
+    $sheet->mergeCells('I8:I9');
     
-    $sheet->getStyle('A8:H9')->getFont()->setBold(true);
-    $sheet->getStyle('A8:H9')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->getStyle('A8:H9')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-    $sheet->getStyle('A8:H9')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-    $sheet->getStyle('A8:H9')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
+    $sheet->getStyle('A8:I9')->getFont()->setBold(true);
+    $sheet->getStyle('A8:I9')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->getStyle('A8:I9')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+    $sheet->getStyle('A8:I9')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+    $sheet->getStyle('A8:I9')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
 
     // Saldo Awal Row
     $rowNum = 10;
     $sheet->setCellValue('A' . $rowNum, '');
     $sheet->setCellValue('B' . $rowNum, '');
     $sheet->setCellValue('C' . $rowNum, '');
-    $sheet->setCellValue('D' . $rowNum, '');
-    $sheet->setCellValue('E' . $rowNum, 'Saldo Awal');
+    $sheet->setCellValue('D' . $rowNum, 'Saldo Awal');
+    $sheet->setCellValue('E' . $rowNum, '-');
     $sheet->setCellValue('F' . $rowNum, '-');
-    $sheet->setCellValue('G' . $rowNum, '-');
-    $sheet->setCellValue('H' . $rowNum, $stok_awal);
+    $sheet->setCellValue('G' . $rowNum, $stok_awal);
+    $sheet->setCellValue('H' . $rowNum, '');
+    $sheet->setCellValue('I' . $rowNum, '');
     
-    $sheet->getStyle('E' . $rowNum)->getFont()->setBold(true);
-    $sheet->getStyle('E' . $rowNum)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-    $sheet->getStyle('F' . $rowNum . ':H' . $rowNum)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->getStyle('H' . $rowNum)->getFont()->setBold(true);
+    $sheet->getStyle('D' . $rowNum)->getFont()->setBold(true);
+    $sheet->getStyle('D' . $rowNum)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->getStyle('E' . $rowNum . ':G' . $rowNum)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->getStyle('G' . $rowNum)->getFont()->setBold(true);
 
     $rowNum++;
 
     // Data Transaksi
-    $no = 1;
     $sisa = $stok_awal;
     foreach ($transaksi as $row) {
         $masuk = ($row['jenis_transaksi'] == 'masuk') ? $row['jumlah'] : 0;
         $keluar = ($row['jenis_transaksi'] == 'keluar') ? $row['jumlah'] : 0;
         $sisa = $sisa + $masuk - $keluar;
 
-        $sheet->setCellValue('A' . $rowNum, $no++);
+        $sheet->setCellValue('A' . $rowNum, $row['no_bukti']);
         $sheet->setCellValue('B' . $rowNum, date('d/m/Y', strtotime($row['tanggal'])));
-        $sheet->setCellValue('C' . $rowNum, $row['no_bukti']);
-        $sheet->setCellValue('D' . $rowNum, $row['nama_mandor']);
-        $sheet->setCellValue('E' . $rowNum, $row['keterangan']);
-        $sheet->setCellValue('F' . $rowNum, ($masuk > 0 ? $masuk : '-'));
-        $sheet->setCellValue('G' . $rowNum, ($keluar > 0 ? $keluar : '-'));
-        $sheet->setCellValue('H' . $rowNum, $sisa);
+        $sheet->setCellValue('C' . $rowNum, $row['nama_mandor']);
+        $sheet->setCellValue('D' . $rowNum, $row['keterangan']);
+        $sheet->setCellValue('E' . $rowNum, ($masuk > 0 ? $masuk : '-'));
+        $sheet->setCellValue('F' . $rowNum, ($keluar > 0 ? $keluar : '-'));
+        $sheet->setCellValue('G' . $rowNum, $sisa);
+        $sheet->setCellValue('H' . $rowNum, $row['keterangan_lain']);
+        $sheet->setCellValue('I' . $rowNum, '');
+
+        // Add Signature Image if exists
+        if (!empty($row['ttd_asisten']) && file_exists('assets/img/ttd/' . $row['ttd_asisten'])) {
+            $drawing = new Drawing();
+            $drawing->setName('TTD');
+            $drawing->setDescription('Tanda Tangan');
+            $drawing->setPath('assets/img/ttd/' . $row['ttd_asisten']);
+            $drawing->setHeight(40);
+            $drawing->setCoordinates('I' . $rowNum);
+            $drawing->setOffsetX(10);
+            $drawing->setOffsetY(5);
+            $drawing->setWorksheet($sheet);
+            // Adjust row height to fit image
+            $sheet->getRowDimension($rowNum)->setRowHeight(45);
+        }
 
         $rowNum++;
     }
 
     // Total Row
     $sheet->setCellValue('A' . $rowNum, 'TOTAL MUTASI BULAN INI');
-    $sheet->mergeCells('A' . $rowNum . ':E' . $rowNum);
-    $sheet->setCellValue('F' . $rowNum, $total_masuk_periode);
-    $sheet->setCellValue('G' . $rowNum, $total_keluar_periode);
-    $sheet->setCellValue('H' . $rowNum, $sisa);
+    $sheet->mergeCells('A' . $rowNum . ':D' . $rowNum);
+    $sheet->setCellValue('E' . $rowNum, $total_masuk_periode);
+    $sheet->setCellValue('F' . $rowNum, $total_keluar_periode);
+    $sheet->setCellValue('G' . $rowNum, $sisa);
+    $sheet->setCellValue('H' . $rowNum, '');
+    $sheet->setCellValue('I' . $rowNum, '');
     
-    $sheet->getStyle('A' . $rowNum . ':H' . $rowNum)->getFont()->setBold(true);
-    $sheet->getStyle('A' . $rowNum . ':E' . $rowNum)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->getStyle('A' . $rowNum . ':I' . $rowNum)->getFont()->setBold(true);
+    $sheet->getStyle('A' . $rowNum . ':D' . $rowNum)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
     // Styling Data Table
     $lastRow = $rowNum;
-    $sheet->getStyle('A10:H' . $lastRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+    $sheet->getStyle('A10:I' . $lastRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
     $sheet->getStyle('A10:B' . ($lastRow-1))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->getStyle('C10:C' . ($lastRow-1))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
     
     // Auto Size Columns
-    foreach (range('A', 'H') as $col) {
+    foreach (range('A', 'I') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
     }
 
@@ -238,57 +258,67 @@ if ($type == 'excel') {
     <table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse; font-size: 10pt;">
         <thead>
             <tr style="background-color: #f2f2f2;">
-                <th rowspan="2" width="5%">No</th>
-                <th rowspan="2" width="10%">Tanggal</th>
-                <th rowspan="2" width="10%">No. Bukti</th>
-                <th rowspan="2" width="15%">Nama Mandor</th>
-                <th rowspan="2">Keterangan</th>
+                <th rowspan="2">No. Bukti Penerimaan</th>
+                <th rowspan="2">Tanggal</th>
+                <th rowspan="2">Nama Mandor yang mengambil</th>
+                <th rowspan="2">Dipakai untuk diterima dari</th>
                 <th colspan="3">Banyaknya</th>
+                <th rowspan="2">Keterangan</th>
+                <th rowspan="2">Tanda Tangan Asisten Afd./Wakil Asisten Afd</th>
             </tr>
             <tr style="background-color: #f2f2f2;">
-                <th width="10%">Masuk</th>
-                <th width="10%">Keluar</th>
-                <th width="10%">Sisa</th>
+                <th>Masuk</th>
+                <th>Keluar</th>
+                <th>Sisa</th>
             </tr>
         </thead>
         <tbody>
             <tr style="background-color: #fafafa;">
-                <td colspan="5" style="text-align: right; font-weight: bold;">Saldo Awal</td>
+                <td colspan="4" style="text-align: right; font-weight: bold;">Saldo Awal</td>
                 <td style="text-align: center;">-</td>
                 <td style="text-align: center;">-</td>
                 <td style="text-align: center; font-weight: bold;">' . number_format($stok_awal, 2) . '</td>
+                <td></td>
+                <td></td>
             </tr>';
     
-    $no = 1;
     $sisa = $stok_awal;
     foreach ($transaksi as $row) {
         $masuk = ($row['jenis_transaksi'] == 'masuk') ? $row['jumlah'] : 0;
         $keluar = ($row['jenis_transaksi'] == 'keluar') ? $row['jumlah'] : 0;
         $sisa = $sisa + $masuk - $keluar;
         
+        $ttd_html = '';
+        if (!empty($row['ttd_asisten']) && file_exists('assets/img/ttd/' . $row['ttd_asisten'])) {
+            $ttd_html = '<img src="assets/img/ttd/' . $row['ttd_asisten'] . '" style="height: 40px;">';
+        }
+
         $html .= '
             <tr>
-                <td style="text-align: center;">' . $no++ . '</td>
-                <td style="text-align: center;">' . date('d/m/Y', strtotime($row['tanggal'])) . '</td>
                 <td style="text-align: center;">' . htmlspecialchars($row['no_bukti']) . '</td>
+                <td style="text-align: center;">' . date('d/m/Y', strtotime($row['tanggal'])) . '</td>
                 <td>' . htmlspecialchars($row['nama_mandor']) . '</td>
                 <td>' . htmlspecialchars($row['keterangan']) . '</td>
                 <td style="text-align: center;">' . ($masuk > 0 ? number_format($masuk, 2) : '-') . '</td>
                 <td style="text-align: center;">' . ($keluar > 0 ? number_format($keluar, 2) : '-') . '</td>
                 <td style="text-align: center; font-weight: bold;">' . number_format($sisa, 2) . '</td>
+                <td>' . htmlspecialchars($row['keterangan_lain']) . '</td>
+                <td style="text-align: center;">' . $ttd_html . '</td>
             </tr>';
     }
     
     if (count($transaksi) == 0) {
-        $html .= '<tr><td colspan="8" style="text-align: center;">Tidak ada data transaksi.</td></tr>';
+        $html .= '<tr><td colspan="9" style="text-align: center;">Tidak ada data transaksi.</td></tr>';
     }
 
     $html .= '
             <tr style="background-color: #f2f2f2; font-weight: bold;">
-                <td colspan="5" style="text-align: right;">Total Mutasi Bulan Ini</td>
+                <td colspan="4" style="text-align: right;">Total Mutasi Bulan Ini</td>
                 <td style="text-align: center;">' . number_format($total_masuk_periode, 2) . '</td>
                 <td style="text-align: center;">' . number_format($total_keluar_periode, 2) . '</td>
                 <td style="text-align: center;">' . number_format($sisa, 2) . '</td>
+                <td></td>
+                <td></td>
             </tr>
         </tbody>
     </table>

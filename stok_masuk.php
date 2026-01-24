@@ -80,7 +80,7 @@ if (!empty($item_counts)) {
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo filemtime('assets/css/dashboard.css'); ?>">
 </head>
 <body>
 
@@ -130,17 +130,17 @@ if (!empty($item_counts)) {
     <!-- Main Content -->
     <div class="main-content">
         <!-- Top Navbar -->
-        <div class="top-navbar">
+        <div class="top-navbar animate-fade-in">
             <div class="d-flex align-items-center">
-                <button class="btn btn-light d-md-none me-3" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-                <div class="company-title">
-                    <img src="assets/img/log.png" alt="Logo" style="height: 30px; margin-right: 10px;">
-                    PT. PERKEBUNAN NUSANTARA I REGIONAL 3 KEBUN SILUWOK
+                <button class="btn btn-light d-lg-none me-3" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <div class="d-none d-md-block">
+                    <h5 class="m-0 fw-bold text-success">Laporan Stok Masuk</h5>
+                    <p class="m-0 text-muted" style="font-size: 0.85rem;">Monitoring penerimaan barang dan logistik kebun</p>
                 </div>
             </div>
             <div class="user-profile">
                 <div class="text-end me-2 d-none d-sm-block">
-                    <div style="font-weight: 600; font-size: 0.9rem;"><?php echo $_SESSION['nama_lengkap']; ?></div>
+                    <div class="fw-bold text-dark"><?php echo $_SESSION['nama_lengkap']; ?></div>
                     <div style="font-size: 0.75rem; color: #777;"><?php echo ucfirst($_SESSION['role']); ?></div>
                 </div>
                 <div class="user-avatar">
@@ -150,160 +150,136 @@ if (!empty($item_counts)) {
         </div>
 
         <!-- Welcome Banner -->
-        <div class="welcome-banner mb-4">
+        <div class="welcome-banner animate-fade-in delay-1 mb-4">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h4 class="mb-1 text-white">Laporan Stok Masuk</h4>
-                    <p class="mb-0 text-white-50">Monitoring penerimaan barang dan logistik kebun.</p>
+                    <h4 class="fw-bold mb-2 text-white">Stok Masuk Logistik</h4>
+                    <p class="mb-0 text-white-50">Rekapitulasi penerimaan barang ke gudang pusat.</p>
                 </div>
                 <div class="col-md-4 text-end d-none d-md-block">
-                    <i class="fas fa-arrow-down fa-3x text-white opacity-25"></i>
+                     <span style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 30px; font-weight: 500; color: white;">
+                        <i class="fas fa-calendar-alt me-2"></i> <?php echo date('F Y', strtotime($selected_bulan)); ?>
+                    </span>
                 </div>
             </div>
         </div>
 
         <!-- Info Cards -->
         <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="card card-gradient-blue text-white h-100 border-0 shadow-sm">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="info-detail-label">Total Transaksi</span>
-                                <span class="info-detail-value"><?php echo $total_transaksi; ?></span>
-                                <div class="mt-1 small opacity-75">Transaksi Bulan Ini</div>
-                            </div>
-                            <i class="fas fa-file-invoice fa-2x opacity-25"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4 animate-fade-in delay-2">
+                <div class="stats-card bg-gradient-1">
+                    <div class="stats-icon"><i class="fas fa-file-invoice"></i></div>
+                    <div class="stats-label">Total Transaksi</div>
+                    <div class="stats-value"><?php echo $total_transaksi; ?></div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;">Transaksi Bulan Ini</div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card card-gradient-green text-white h-100 border-0 shadow-sm">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="info-detail-label">Total Barang Masuk</span>
-                                <span class="info-detail-value"><?php echo number_format($total_qty, 2); ?></span>
-                                <div class="mt-1 small opacity-75">Unit / Kg / Liter</div>
-                            </div>
-                            <i class="fas fa-cubes fa-2x opacity-25"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4 animate-fade-in delay-2">
+                <div class="stats-card bg-gradient-2">
+                    <div class="stats-icon"><i class="fas fa-cubes"></i></div>
+                    <div class="stats-label">Total Barang Masuk</div>
+                    <div class="stats-value"><?php echo number_format($total_qty, 0); ?></div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;">Unit / Kg / Liter</div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card card-gradient-orange text-white h-100 border-0 shadow-sm">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="info-detail-label">Item Terbanyak</span>
-                                <span class="info-detail-value" style="font-size: 1.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; display: block;"><?php echo $top_item; ?></span>
-                                <div class="mt-1 small opacity-75"><?php echo number_format($top_qty, 2); ?> Masuk</div>
-                            </div>
-                            <i class="fas fa-star fa-2x opacity-25"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4 animate-fade-in delay-2">
+                <div class="stats-card bg-gradient-3">
+                    <div class="stats-icon"><i class="fas fa-star"></i></div>
+                    <div class="stats-label">Item Terbanyak</div>
+                    <div class="stats-value" style="font-size: 1.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $top_item; ?></div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;"><?php echo number_format($top_qty, 0); ?> Unit Masuk</div>
                 </div>
             </div>
         </div>
 
         <!-- Filter Section -->
-        <div class="card filter-card border-0 shadow-sm mb-4">
-            <div class="card-body p-3">
-                <form method="GET" class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label small text-muted fw-bold text-uppercase">Afdeling</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-building text-muted"></i></span>
-                            <select name="afdeling" class="form-select border-start-0 bg-light" onchange="this.form.submit()">
-                                <option value="">Semua Afdeling</option>
-                                <?php foreach ($afdelings as $afd): ?>
-                                    <option value="<?php echo $afd['id']; ?>" <?php echo (isset($_GET['afdeling']) && $_GET['afdeling'] == $afd['id']) ? 'selected' : ''; ?>>
-                                        <?php echo $afd['nama_afdeling']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small text-muted fw-bold text-uppercase">Periode Bulan</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-calendar-alt text-muted"></i></span>
-                            <input type="month" name="bulan" class="form-control border-start-0 bg-light" value="<?php echo $selected_bulan; ?>" onchange="this.form.submit()">
-                        </div>
-                    </div>
-                    <div class="col-md-5 text-md-end">
-                        <div class="btn-group shadow-sm">
-                            <a href="export_masuk.php?afdeling=<?php echo isset($_GET['afdeling']) ? $_GET['afdeling'] : ''; ?>&bulan=<?php echo $selected_bulan; ?>&type=pdf" target="_blank" class="btn btn-light text-success fw-bold">
-                                <i class="fas fa-print me-1"></i> Print
-                            </a>
-                            <a href="export_masuk.php?afdeling=<?php echo isset($_GET['afdeling']) ? $_GET['afdeling'] : ''; ?>&bulan=<?php echo $selected_bulan; ?>&type=excel" target="_blank" class="btn btn-light text-success fw-bold">
-                                <i class="fas fa-file-excel me-1"></i> Excel
-                            </a>
-                        </div>
-                    </div>
-                </form>
+        <div class="glass-card animate-fade-in delay-3">
+            <div class="section-title">
+                <i class="fas fa-filter"></i> Filter Data
             </div>
+            <form method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <select name="afdeling" class="form-select" id="afdelingSelect" onchange="this.form.submit()">
+                            <option value="">Semua Afdeling</option>
+                            <?php foreach ($afdelings as $afd): ?>
+                                <option value="<?php echo $afd['id']; ?>" <?php echo (isset($_GET['afdeling']) && $_GET['afdeling'] == $afd['id']) ? 'selected' : ''; ?>>
+                                    <?php echo $afd['nama_afdeling']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <label for="afdelingSelect">Pilih Afdeling</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="month" name="bulan" class="form-control" id="bulanSelect" value="<?php echo $selected_bulan; ?>" onchange="this.form.submit()">
+                        <label for="bulanSelect">Periode Bulan</label>
+                    </div>
+                </div>
+                <div class="col-md-5 d-flex align-items-center justify-content-end gap-2">
+                     <a href="export_masuk.php?afdeling=<?php echo isset($_GET['afdeling']) ? $_GET['afdeling'] : ''; ?>&bulan=<?php echo $selected_bulan; ?>&type=excel" target="_blank" class="btn btn-success rounded-pill px-4 py-2 fw-bold">
+                        <i class="fas fa-file-excel me-2"></i> Excel
+                    </a>
+                    <a href="export_masuk.php?afdeling=<?php echo isset($_GET['afdeling']) ? $_GET['afdeling'] : ''; ?>&bulan=<?php echo $selected_bulan; ?>&type=pdf" target="_blank" class="btn btn-danger rounded-pill px-4 py-2 fw-bold">
+                        <i class="fas fa-file-pdf me-2"></i> PDF
+                    </a>
+                </div>
+            </form>
         </div>
 
         <!-- Data Table -->
-        <div class="card table-card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 py-3">
-                <h6 class="m-0 fw-bold text-success"><i class="fas fa-list me-2"></i>Rincian Stok Masuk - <?php echo date('F Y', strtotime($selected_bulan)); ?></h6>
+        <div class="glass-card animate-fade-in delay-4">
+            <div class="section-title mb-4">
+                <i class="fas fa-list"></i> Rincian Stok Masuk
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table id="stokMasukTable" class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Kode Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Kategori</th>
+                            <th class="text-center">Satuan</th>
+                            <th class="text-end">Jumlah Masuk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (count($transaksi) > 0): ?>
+                            <?php $no = 1; foreach ($transaksi as $row): ?>
                             <tr>
-                                <th class="text-center py-3 text-secondary text-uppercase small fw-bold border-0" width="5%">No</th>
-                                <th class="py-3 text-secondary text-uppercase small fw-bold border-0">Tanggal</th>
-                                <th class="py-3 text-secondary text-uppercase small fw-bold border-0">Kode Barang</th>
-                                <th class="py-3 text-secondary text-uppercase small fw-bold border-0">Nama Barang</th>
-                                <th class="py-3 text-secondary text-uppercase small fw-bold border-0">Kategori</th>
-                                <th class="text-center py-3 text-secondary text-uppercase small fw-bold border-0">Satuan</th>
-                                <th class="text-end py-3 text-secondary text-uppercase small fw-bold border-0">Jumlah Masuk</th>
+                                <td class="text-center text-muted"><?php echo $no++; ?></td>
+                                <td>
+                                    <div class="fw-bold text-dark"><?php echo date('d/m/Y', strtotime($row['tanggal'])); ?></div>
+                                    <div class="small text-muted"><?php echo $row['nama_afdeling']; ?></div>
+                                </td>
+                                <td><span class="badge bg-light text-secondary border"><?php echo $row['kode_barang']; ?></span></td>
+                                <td class="fw-bold text-success"><?php echo $row['nama_barang']; ?></td>
+                                <td><span class="badge bg-info bg-opacity-10 text-info border border-info"><?php echo $row['kategori']; ?></span></td>
+                                <td class="text-center text-muted"><?php echo $row['satuan']; ?></td>
+                                <td class="text-end fw-bold text-dark"><?php echo number_format($row['jumlah'], 0, ',', '.'); ?></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (count($transaksi) > 0): ?>
-                                <?php $no = 1; foreach ($transaksi as $row): ?>
-                                <tr>
-                                    <td class="text-center text-muted"><?php echo $no++; ?></td>
-                                    <td>
-                                        <div class="fw-bold text-dark"><?php echo date('d/m/Y', strtotime($row['tanggal'])); ?></div>
-                                        <div class="small text-muted"><?php echo $row['nama_afdeling']; ?></div>
-                                    </td>
-                                    <td><span class="badge bg-light text-secondary border"><?php echo $row['kode_barang']; ?></span></td>
-                                    <td class="fw-bold text-dark"><?php echo $row['nama_barang']; ?></td>
-                                    <td><span class="badge bg-info bg-opacity-10 text-info"><?php echo $row['kategori']; ?></span></td>
-                                    <td class="text-center text-muted"><?php echo $row['satuan']; ?></td>
-                                    <td class="text-end fw-bold text-success"><?php echo number_format($row['jumlah'], 2, ',', '.'); ?></td>
-                                </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="7" class="text-center py-5">
-                                        <div class="text-muted">
-                                            <i class="fas fa-inbox fa-3x mb-3 opacity-25"></i>
-                                            <p class="mb-0">Tidak ada data stok masuk pada periode ini.</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                        <tfoot class="bg-light fw-bold">
+                            <?php endforeach; ?>
+                        <?php else: ?>
                             <tr>
-                                <td colspan="6" class="text-end text-secondary text-uppercase py-3">Total Masuk</td>
-                                <td class="text-end text-success py-3 fs-6"><?php echo number_format($total_qty, 2, ',', '.'); ?></td>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3 opacity-25"></i>
+                                    <p class="mb-0">Tidak ada data stok masuk pada periode ini.</p>
+                                </td>
                             </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                        <?php endif; ?>
+                    </tbody>
+                    <tfoot class="bg-light fw-bold">
+                        <tr>
+                            <td colspan="6" class="text-end text-uppercase py-3">Total Masuk</td>
+                            <td class="text-end text-success py-3 fs-6"><?php echo number_format($total_qty, 0, ',', '.'); ?></td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
-
     </div>
 
     <!-- Bootstrap JS -->

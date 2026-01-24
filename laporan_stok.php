@@ -52,7 +52,7 @@ $low_stock_count = $stats['low_stock_count'];
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo filemtime('assets/css/dashboard.css'); ?>">
 </head>
 <body>
 
@@ -105,17 +105,17 @@ $low_stock_count = $stats['low_stock_count'];
     <!-- Main Content -->
     <div class="main-content">
         <!-- Top Navbar -->
-        <div class="top-navbar">
+        <div class="top-navbar animate-fade-in">
             <div class="d-flex align-items-center">
-                <button class="btn btn-light d-md-none me-3" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-                <div class="company-title">
-                    <img src="assets/img/log.png" alt="Logo" style="height: 30px; margin-right: 10px;">
-                    PT. PERKEBUNAN NUSANTARA I REGIONAL 3 KEBUN SILUWOK
+                <button class="btn btn-light d-lg-none me-3" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <div class="d-none d-md-block">
+                    <h5 class="m-0 fw-bold text-success">Laporan Sisa Stok</h5>
+                    <p class="m-0 text-muted" style="font-size: 0.85rem;">Monitoring ketersediaan barang di gudang</p>
                 </div>
             </div>
             <div class="user-profile">
                 <div class="text-end me-2 d-none d-sm-block">
-                    <div style="font-weight: 600; font-size: 0.9rem;"><?php echo $_SESSION['nama_lengkap']; ?></div>
+                    <div class="fw-bold text-dark"><?php echo $_SESSION['nama_lengkap']; ?></div>
                     <div style="font-size: 0.75rem; color: #777;"><?php echo ucfirst($_SESSION['role']); ?></div>
                 </div>
                 <div class="user-avatar">
@@ -125,10 +125,10 @@ $low_stock_count = $stats['low_stock_count'];
         </div>
 
         <!-- Welcome Banner -->
-        <div class="welcome-banner mb-4">
+        <div class="welcome-banner animate-fade-in delay-1 mb-4" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h4 class="mb-1 text-white">Laporan Sisa Stok</h4>
+                    <h4 class="fw-bold mb-2 text-white">Laporan Sisa Stok</h4>
                     <p class="mb-0 text-white-50">Monitoring ketersediaan barang di gudang saat ini.</p>
                 </div>
                 <div class="col-md-4 text-end d-none d-md-block">
@@ -139,102 +139,87 @@ $low_stock_count = $stats['low_stock_count'];
 
         <!-- Info Cards -->
         <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="card card-gradient-blue text-white h-100 border-0 shadow-sm">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="info-detail-label">Total Item Barang</span>
-                                <span class="info-detail-value"><?php echo $total_items; ?></span>
-                                <div class="mt-1 small opacity-75">Jenis Barang Terdaftar</div>
-                            </div>
-                            <i class="fas fa-box-open fa-2x opacity-25"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4 animate-fade-in delay-2">
+                <div class="stats-card bg-gradient-4">
+                    <div class="stats-icon"><i class="fas fa-box-open"></i></div>
+                    <div class="stats-label">Total Item Barang</div>
+                    <div class="stats-value"><?php echo $total_items; ?></div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;">Jenis Barang Terdaftar</div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card card-gradient-green text-white h-100 border-0 shadow-sm">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="info-detail-label">Total Stok Fisik</span>
-                                <span class="info-detail-value"><?php echo number_format($total_qty, 0, ',', '.'); ?></span>
-                                <div class="mt-1 small opacity-75">Akumulasi Seluruh Barang</div>
-                            </div>
-                            <i class="fas fa-cubes fa-2x opacity-25"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4 animate-fade-in delay-2">
+                <div class="stats-card bg-gradient-1">
+                    <div class="stats-icon"><i class="fas fa-cubes"></i></div>
+                    <div class="stats-label">Total Stok Fisik</div>
+                    <div class="stats-value"><?php echo number_format($total_qty, 0, ',', '.'); ?></div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;">Akumulasi Seluruh Barang</div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card <?php echo $low_stock_count > 0 ? 'card-gradient-red' : 'card-gradient-purple'; ?> text-white h-100 border-0 shadow-sm">
-                    <div class="card-body p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <span class="info-detail-label">Stok Menipis</span>
-                                <span class="info-detail-value"><?php echo $low_stock_count; ?></span>
-                                <div class="mt-1 small opacity-75">Item Perlu Re-stock (≤ 10)</div>
-                            </div>
-                            <i class="fas fa-exclamation-triangle fa-2x opacity-25"></i>
-                        </div>
-                    </div>
+            <div class="col-md-4 animate-fade-in delay-2">
+                <div class="stats-card <?php echo $low_stock_count > 0 ? 'bg-gradient-3' : 'bg-gradient-2'; ?>">
+                    <div class="stats-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stats-label">Stok Menipis</div>
+                    <div class="stats-value"><?php echo $low_stock_count; ?></div>
+                    <div style="font-size: 0.85rem; opacity: 0.8;">Item Perlu Re-stock (≤ 10)</div>
                 </div>
             </div>
         </div>
 
         <!-- Filter & Action Section -->
-        <div class="card filter-card border-0 shadow-sm mb-4">
-            <div class="card-body p-3">
-                <form method="GET" class="row g-3 align-items-center">
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
-                            <input type="text" name="search" class="form-control border-start-0 bg-light" placeholder="Cari nama barang, kode, atau kategori..." value="<?php echo htmlspecialchars($search); ?>">
-                            <button class="btn btn-primary" type="submit">Cari</button>
-                        </div>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <div class="btn-group shadow-sm">
-                            <a href="export_stok.php?type=pdf&search=<?php echo urlencode($search); ?>" target="_blank" class="btn btn-light text-danger fw-bold">
-                                <i class="fas fa-print me-1"></i> Print PDF
-                            </a>
-                            <a href="export_stok.php?type=excel&search=<?php echo urlencode($search); ?>" target="_blank" class="btn btn-light text-success fw-bold">
-                                <i class="fas fa-file-excel me-1"></i> Export Excel
-                            </a>
-                        </div>
-                    </div>
-                </form>
+        <div class="glass-card animate-fade-in delay-3 mb-4">
+            <div class="section-title">
+                <i class="fas fa-search"></i> Pencarian & Export
             </div>
+            <form method="GET" class="row g-3 align-items-center">
+                <div class="col-md-7">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                        <div class="form-floating flex-grow-1">
+                            <input type="text" name="search" class="form-control border-start-0" id="searchInput" placeholder="Cari nama barang..." value="<?php echo htmlspecialchars($search); ?>">
+                            <label for="searchInput">Cari nama barang, kode, atau kategori...</label>
+                        </div>
+                        <button class="btn btn-primary px-4 fw-bold" type="submit">Cari</button>
+                    </div>
+                </div>
+                <div class="col-md-5 text-md-end">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="export_stok.php?type=excel&search=<?php echo urlencode($search); ?>" target="_blank" class="btn btn-success rounded-pill px-4 py-2 fw-bold">
+                            <i class="fas fa-file-excel me-2"></i> Excel
+                        </a>
+                        <a href="export_stok.php?type=pdf&search=<?php echo urlencode($search); ?>" target="_blank" class="btn btn-danger rounded-pill px-4 py-2 fw-bold">
+                            <i class="fas fa-print me-2"></i> Print PDF
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
 
         <!-- Data Table -->
-        <div class="card table-card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 py-3">
-                <h6 class="m-0 fw-bold text-success"><i class="fas fa-list me-2"></i>Daftar Sisa Stok Barang</h6>
+        <div class="glass-card animate-fade-in delay-4">
+            <div class="section-title mb-4">
+                <i class="fas fa-list"></i> Daftar Sisa Stok Barang
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="text-center py-3 text-secondary text-uppercase small fw-bold border-0" width="5%">No</th>
-                                <th class="py-3 text-secondary text-uppercase small fw-bold border-0" width="15%">Kode Barang</th>
-                                <th class="py-3 text-secondary text-uppercase small fw-bold border-0">Nama Barang</th>
-                                <th class="py-3 text-secondary text-uppercase small fw-bold border-0">Kategori</th>
-                                <th class="text-center py-3 text-secondary text-uppercase small fw-bold border-0" width="10%">Satuan</th>
-                                <th class="text-end py-3 text-secondary text-uppercase small fw-bold border-0" width="15%">Stok Saat Ini</th>
-                                <th class="text-center py-3 text-secondary text-uppercase small fw-bold border-0" width="15%">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle" width="5%">No</th>
+                            <th class="align-middle" width="15%">Kode Barang</th>
+                            <th class="align-middle">Nama Barang</th>
+                            <th class="align-middle">Kategori</th>
+                            <th class="text-center align-middle" width="10%">Satuan</th>
+                            <th class="text-end align-middle" width="15%">Stok Saat Ini</th>
+                            <th class="text-center align-middle" width="15%">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                             <?php if (count($barang) > 0): ?>
                                 <?php $no = 1; foreach ($barang as $row): ?>
                                 <tr>
                                     <td class="text-center text-muted"><?php echo $no++; ?></td>
                                     <td><span class="badge bg-light text-secondary border"><?php echo $row['kode_barang']; ?></span></td>
                                     <td class="fw-bold text-dark"><?php echo $row['nama_barang']; ?></td>
-                                    <td><span class="badge bg-info bg-opacity-10 text-info"><?php echo $row['kategori']; ?></span></td>
+                                    <td><span class="badge bg-info bg-opacity-10 text-info border border-info"><?php echo $row['kategori']; ?></span></td>
                                     <td class="text-center text-muted"><?php echo $row['satuan']; ?></td>
                                     <td class="text-end fw-bold <?php echo ($row['stok'] <= 10) ? 'text-danger' : 'text-success'; ?>" style="font-size: 1.1em;">
                                         <?php echo number_format($row['stok'], 2, ',', '.'); ?>
@@ -266,7 +251,6 @@ $low_stock_count = $stats['low_stock_count'];
                     </table>
                 </div>
             </div>
-        </div>
 
     </div>
 

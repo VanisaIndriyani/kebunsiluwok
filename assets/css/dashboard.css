@@ -38,8 +38,8 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    background: white;
-    box-shadow: 4px 0 20px rgba(0,0,0,0.05);
+    background: #1b5e20; /* Dark Green Background */
+    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
     z-index: 1000;
     transition: all 0.3s ease;
     overflow-y: auto;
@@ -50,13 +50,13 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-brand {
     font-weight: 700;
     font-size: 1.2rem;
-    color: var(--primary-color);
+    color: #ffffff;
     text-decoration: none;
     letter-spacing: 0.5px;
 }
@@ -75,7 +75,7 @@ body {
     display: flex;
     align-items: center;
     padding: 1rem 1.2rem;
-    color: #555;
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     border-radius: 12px;
     transition: all 0.3s ease;
@@ -84,15 +84,15 @@ body {
 }
 
 .sidebar-menu a:hover {
-    background-color: rgba(46, 125, 50, 0.05);
-    color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
     transform: translateX(5px);
 }
 
 .sidebar-menu a.active {
-    background: var(--gradient-primary);
+    background: rgba(255, 255, 255, 0.2);
     color: white;
-    box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-menu i {
@@ -112,6 +112,13 @@ body {
     padding: 0.7rem 1rem;
     font-size: 0.9rem;
     opacity: 0.8;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.sidebar-submenu a:hover {
+    color: #ffffff;
+    background: transparent;
+    opacity: 1;
 }
 
 /* Main Content Layout */

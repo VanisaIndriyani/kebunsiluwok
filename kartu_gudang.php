@@ -541,12 +541,14 @@ if ($selected_afdeling && $selected_barang) {
 
         <!-- Table Section -->
         <div class="table-card p-4 glass-card">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold m-0 text-secondary"><i class="fas fa-list me-2"></i> Riwayat Transaksi</h5>
-                <div class="d-flex gap-2">
-                    <input type="text" id="searchInput" onkeyup="searchTable()" class="form-control form-control-sm shadow-sm" placeholder="Cari data..." style="width: 250px; border-radius: 20px;">
-                    <a href="export_kartu.php?afdeling=<?php echo $selected_afdeling; ?>&barang=<?php echo $selected_barang; ?>&bulan=<?php echo $selected_bulan; ?>&type=excel" target="_blank" class="btn btn-success btn-sm shadow-sm rounded-pill px-3"><i class="fas fa-file-excel me-1"></i> Excel</a>
-                    <a href="export_kartu.php?afdeling=<?php echo $selected_afdeling; ?>&barang=<?php echo $selected_barang; ?>&bulan=<?php echo $selected_bulan; ?>&type=pdf" target="_blank" class="btn btn-danger btn-sm shadow-sm rounded-pill px-3"><i class="fas fa-file-pdf me-1"></i> PDF</a>
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+                <h5 class="fw-bold m-0 text-secondary align-self-start align-self-md-center"><i class="fas fa-list me-2"></i> Riwayat Transaksi</h5>
+                <div class="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+                    <input type="text" id="searchInput" onkeyup="searchTable()" class="form-control form-control-sm shadow-sm" placeholder="Cari data..." style="border-radius: 20px; min-width: 250px;">
+                    <div class="d-flex gap-2">
+                        <a href="export_kartu.php?afdeling=<?php echo $selected_afdeling; ?>&barang=<?php echo $selected_barang; ?>&bulan=<?php echo $selected_bulan; ?>&type=excel" target="_blank" class="btn btn-success btn-sm shadow-sm rounded-pill px-3 flex-fill text-nowrap"><i class="fas fa-file-excel me-1"></i> Excel</a>
+                        <a href="export_kartu.php?afdeling=<?php echo $selected_afdeling; ?>&barang=<?php echo $selected_barang; ?>&bulan=<?php echo $selected_bulan; ?>&type=pdf" target="_blank" class="btn btn-danger btn-sm shadow-sm rounded-pill px-3 flex-fill text-nowrap"><i class="fas fa-file-pdf me-1"></i> PDF</a>
+                    </div>
                 </div>
             </div>
 

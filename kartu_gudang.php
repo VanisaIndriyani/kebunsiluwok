@@ -14,7 +14,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action'])) {
         try {
             if ($_POST['action'] == 'add') {
-                $stmt = $koneksi->prepare("INSERT INTO transaksi_gudang (tanggal, id_afdeling, id_barang, no_bukti, nama_mandor, jenis_transaksi, jumlah, keterangan, keterangan_lain) VALUES (:tgl, :afd, :brg, :nobukti, :mandor, :jenis, :jml, :ket, :ket_lain)");
+                // Handle File Upload
+                $ttd_path = null;
+                if (isset($_FILES['ttd_asisten']) && $_FILES['ttd_asisten']['error'] == 0) {
+                    $target_dir = "assets/img/ttd/";
+                    if (!file_exists($target_dir)) mkdir($target_dir, 0777, true);
+                    $file_ext = strtolower(pathinfo($_FILES["ttd_asisten"]["name"], PATHINFO_EXTENSION));
+                    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+                    if (in_array($file_ext, $allowed)) {
+                        $new_filename = uniqid() . '.' . $file_ext;
+                        if (move_uploaded_file($_FILES["ttd_asisten"]["tmp_name"], $target_dir . $new_filename)) {
+                            $ttd_path = $new_filename;
+                        }
+                    }
+                }
+
+                $stmt = $koneksi->prepare("INSERT INTO transaksi_gudang (tanggal, id_afdeling, id_barang, no_bukti, nama_mandor, jenis_transaksi, jumlah, keterangan, keterangan_lain, ttd_asisten) VALUES (:tgl, :afd, :brg, :nobukti, :mandor, :jenis, :jml, :ket, :ket_lain, :ttd)");
                 $stmt->execute([
                     ':tgl' => $_POST['tanggal'],
                     ':afd' => $_POST['id_afdeling'],

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once 'config/session.php';
 require_once 'config/database.php';
 
 // Cek Login
@@ -7,6 +7,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
 }
+$nama_user = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : (isset($_SESSION['username']) ? $_SESSION['username'] : 'Pengguna');
+$role_user = isset($_SESSION['role']) ? $_SESSION['role'] : '';
 
 // Handle CRUD Operations
 $message = '';
@@ -29,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
 
+                $jumlah_norm = isset($_POST['jumlah']) ? floatval(str_replace(',', '.', $_POST['jumlah'])) : 0;
                 $stmt = $koneksi->prepare("INSERT INTO transaksi_gudang (tanggal, id_afdeling, id_barang, no_bukti, nama_mandor, jenis_transaksi, jumlah, keterangan, keterangan_lain, ttd_asisten) VALUES (:tgl, :afd, :brg, :nobukti, :mandor, :jenis, :jml, :ket, :ket_lain, :ttd)");
                 $stmt->execute([
                     ':tgl' => $_POST['tanggal'],
@@ -37,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':nobukti' => $_POST['no_bukti'],
                     ':mandor' => $_POST['nama_mandor'],
                     ':jenis' => $_POST['jenis_transaksi'],
-                    ':jml' => $_POST['jumlah'],
+                    ':jml' => $jumlah_norm,
                     ':ket' => $_POST['keterangan'],
                     ':ket_lain' => $_POST['keterangan_lain'],
                     ':ttd' => $ttd_path
@@ -51,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':nobukti' => $_POST['no_bukti'],
                     ':mandor' => $_POST['nama_mandor'],
                     ':jenis' => $_POST['jenis_transaksi'],
-                    ':jml' => $_POST['jumlah'],
+                    ':jml' => floatval(str_replace(',', '.', $_POST['jumlah'])),
                     ':ket' => $_POST['keterangan'],
                     ':ket_lain' => $_POST['keterangan_lain'],
                     ':id' => $_POST['id']
@@ -393,7 +396,7 @@ if ($selected_afdeling && $selected_barang) {
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="assets/img/log.png" alt="Logo" style="width: 30px;">
+            <img src="assets/img/log.png" alt="Logo" class="sidebar-logo">
             <a href="#" class="sidebar-brand">KEBUN SILUWOK</a>
         </div>
         <ul class="sidebar-menu">
@@ -447,8 +450,8 @@ if ($selected_afdeling && $selected_barang) {
             </div>
             <div class="user-profile">
                 <div class="text-end me-2 d-none d-sm-block">
-                    <div style="font-weight: 600; font-size: 0.9rem;"><?php echo $_SESSION['nama_lengkap']; ?></div>
-                    <div style="font-size: 0.75rem; color: #777;"><?php echo ucfirst($_SESSION['role']); ?></div>
+                    <div style="font-weight: 600; font-size: 0.9rem;"><?php echo $nama_user; ?></div>
+                    <div style="font-size: 0.75rem; color: #777;"><?php echo ucfirst($role_user); ?></div>
                 </div>
                 <div class="user-avatar">
                     <i class="fas fa-user"></i>
@@ -582,7 +585,6 @@ if ($selected_afdeling && $selected_barang) {
                             <th rowspan="2">Dipakai untuk diterima dari</th>
                             <th colspan="3">Banyaknya</th>
                             <th rowspan="2">Keterangan</th>
-                            <th rowspan="2">Tanda Tangan Asisten Afd./Wakil Asisten Afd</th>
                             <th rowspan="2" width="10%">Aksi</th>
                         </tr>
                         <tr>
@@ -592,15 +594,6 @@ if ($selected_afdeling && $selected_barang) {
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Saldo Awal Row -->
-                        <tr class="bg-light">
-                            <td colspan="6" class="text-end fw-bold text-secondary">Saldo Awal</td>
-                            <td class="text-center fw-bold"><?php echo number_format($stok_awal, 2); ?></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-
                         <?php 
                         $no = 1;
                         $sisa = $stok_awal; 
@@ -649,13 +642,6 @@ if ($selected_afdeling && $selected_barang) {
                             </td>
                             <td class="text-muted small"><?php echo $row['keterangan_lain']; ?></td>
                             <td class="text-center">
-                                <?php if (!empty($row['ttd_asisten'])): ?>
-                                    <img src="assets/img/ttd/<?php echo $row['ttd_asisten']; ?>" alt="TTD" class="ttd-img shadow-sm">
-                                <?php else: ?>
-                                    <span class="badge bg-light text-muted border">Manual</span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="text-center">
                                 <div class="btn-group shadow-sm rounded-pill" role="group">
                                     <button class="btn btn-light btn-sm text-warning btn-edit px-3" 
                                         data-id="<?php echo $row['id']; ?>"
@@ -691,7 +677,6 @@ if ($selected_afdeling && $selected_barang) {
                             <td class="text-center text-success py-3"><?php echo number_format($total_masuk_periode, 2); ?></td>
                             <td class="text-center text-danger py-3"><?php echo number_format($total_keluar_periode, 2); ?></td>
                             <td class="text-center text-primary py-3"><?php echo number_format($sisa, 2); ?></td>
-                            <td></td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -751,7 +736,7 @@ if ($selected_afdeling && $selected_barang) {
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
-                                    <input type="number" step="0.01" name="jumlah" class="form-control" id="add_jumlah" required placeholder="0">
+                                    <input type="number" step="0.001" name="jumlah" class="form-control" id="add_jumlah" required placeholder="0">
                                     <label for="add_jumlah">Jumlah Barang</label>
                                 </div>
                             </div>
@@ -829,7 +814,7 @@ if ($selected_afdeling && $selected_barang) {
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
-                                    <input type="number" step="0.01" name="jumlah" id="edit_jumlah" class="form-control" required>
+                                    <input type="number" step="0.001" name="jumlah" id="edit_jumlah" class="form-control" required>
                                     <label for="edit_jumlah">Jumlah Barang</label>
                                 </div>
                             </div>

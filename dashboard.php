@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once 'config/session.php';
 require_once 'config/database.php';
 
 // Cek Login
@@ -7,6 +7,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
 }
+$nama_user = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : (isset($_SESSION['username']) ? $_SESSION['username'] : 'Pengguna');
+$role_user = isset($_SESSION['role']) ? $_SESSION['role'] : '';
 
 // Fetch Filter Data
 $stmt_afdeling = $koneksi->query("SELECT * FROM afdeling");
@@ -143,7 +145,7 @@ try {
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="assets/img/log.png" alt="Logo" style="width: 40px;">
+            <img src="assets/img/log.png" alt="Logo" class="sidebar-logo">
             <a href="#" class="sidebar-brand">KEBUN SILUWOK</a>
         </div>
         <ul class="sidebar-menu">
@@ -197,8 +199,8 @@ try {
             </div>
             <div class="user-profile">
                 <div class="text-end me-2 d-none d-sm-block">
-                    <div class="fw-bold text-dark"><?php echo $_SESSION['nama_lengkap']; ?></div>
-                    <div style="font-size: 0.75rem; color: #777;"><?php echo ucfirst($_SESSION['role']); ?></div>
+                    <div class="fw-bold text-dark"><?php echo $nama_user; ?></div>
+                    <div style="font-size: 0.75rem; color: #777;"><?php echo ucfirst($role_user); ?></div>
                 </div>
                 <div class="user-avatar">
                     <i class="fas fa-user"></i>
@@ -210,7 +212,7 @@ try {
         <div class="welcome-banner animate-fade-in delay-1">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h4 class="fw-bold mb-2">Selamat Datang, <?php echo $_SESSION['nama_lengkap']; ?>! 👋</h4>
+                    <h4 class="fw-bold mb-2">Selamat Datang, <?php echo $nama_user; ?>! 👋</h4>
                     <p class="mb-0 opacity-75">Berikut adalah ringkasan aktivitas pemakaian barang di Kebun Siluwok hari ini.</p>
                 </div>
                 <div class="col-md-4 text-end d-none d-md-block">

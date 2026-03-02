@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once 'config/session.php';
 require_once 'config/database.php';
 require_once 'vendor/autoload.php';
 
@@ -130,7 +130,7 @@ if ($type == 'excel') {
     $sheet->setCellValue('F10', 'Keluar');
     $sheet->setCellValue('G10', 'Sisa');
     $sheet->setCellValue('H9', 'Keterangan');
-    $sheet->setCellValue('I9', 'Tanda Tangan Asisten Afd./Wakil Asisten Afd');
+    $sheet->setCellValue('I9', 'Aksi');
 
     $sheet->mergeCells('A9:A10');
     $sheet->mergeCells('B9:B10');
@@ -182,20 +182,7 @@ if ($type == 'excel') {
         $sheet->setCellValue('H' . $rowNum, $row['keterangan_lain']);
         $sheet->setCellValue('I' . $rowNum, '');
 
-        // Add Signature Image if exists
-        if (!empty($row['ttd_asisten']) && file_exists('assets/img/ttd/' . $row['ttd_asisten'])) {
-            $drawing = new Drawing();
-            $drawing->setName('TTD');
-            $drawing->setDescription('Tanda Tangan');
-            $drawing->setPath('assets/img/ttd/' . $row['ttd_asisten']);
-            $drawing->setHeight(40);
-            $drawing->setCoordinates('I' . $rowNum);
-            $drawing->setOffsetX(10);
-            $drawing->setOffsetY(5);
-            $drawing->setWorksheet($sheet);
-            // Adjust row height to fit image
-            $sheet->getRowDimension($rowNum)->setRowHeight(45);
-        }
+        
 
         $rowNum++;
     }
@@ -280,7 +267,6 @@ if ($type == 'excel') {
                 <th rowspan="2">Dipakai untuk diterima dari</th>
                 <th colspan="3">Banyaknya</th>
                 <th rowspan="2">Keterangan</th>
-                <th rowspan="2">Tanda Tangan Asisten Afd./Wakil Asisten Afd</th>
             </tr>
             <tr style="background-color: #f2f2f2;">
                 <th>Masuk</th>
@@ -295,7 +281,6 @@ if ($type == 'excel') {
                 <td style="text-align: center;">-</td>
                 <td style="text-align: center; font-weight: bold;">' . number_format($stok_awal, 2) . '</td>
                 <td></td>
-                <td></td>
             </tr>';
     
     $sisa = $stok_awal;
@@ -304,10 +289,7 @@ if ($type == 'excel') {
         $keluar = ($row['jenis_transaksi'] == 'keluar') ? $row['jumlah'] : 0;
         $sisa = $sisa + $masuk - $keluar;
         
-        $ttd_html = '';
-        if (!empty($row['ttd_asisten']) && file_exists('assets/img/ttd/' . $row['ttd_asisten'])) {
-            $ttd_html = '<img src="assets/img/ttd/' . $row['ttd_asisten'] . '" style="height: 40px;">';
-        }
+        
 
         $html .= '
             <tr>
@@ -319,7 +301,6 @@ if ($type == 'excel') {
                 <td style="text-align: center;">' . ($keluar > 0 ? number_format($keluar, 2) : '-') . '</td>
                 <td style="text-align: center; font-weight: bold;">' . number_format($sisa, 2) . '</td>
                 <td>' . htmlspecialchars($row['keterangan_lain']) . '</td>
-                <td style="text-align: center;">' . $ttd_html . '</td>
             </tr>';
     }
     
@@ -334,16 +315,11 @@ if ($type == 'excel') {
                 <td style="text-align: center;">' . number_format($total_keluar_periode, 2) . '</td>
                 <td style="text-align: center;">' . number_format($sisa, 2) . '</td>
                 <td></td>
-                <td></td>
             </tr>
         </tbody>
     </table>
     
-    <div style="margin-top: 30px; text-align: right;">
-        <p>Siluwok, ' . date('d F Y') . '</p>
-        <p style="margin-top: 60px; margin-right: 30px;">(____________________)</p>
-        <p style="margin-right: 40px;">Petugas Gudang</p>
-    </div>
+    
     ';
 
     $mpdf->WriteHTML($html);

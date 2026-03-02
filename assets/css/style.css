@@ -115,14 +115,21 @@ body, html {
 }
 
 .logo-img {
-    width: 100px;
-    margin-bottom: 15px;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-    transition: transform 0.3s ease;
+    display: block;
+    height: 90px;
+    width: auto;
+    max-width: 160px;
+    margin: 0 auto 12px;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease;
 }
 
 .logo-img:hover {
-    transform: scale(1.1) rotate(5deg);
+    transform: scale(1.03);
 }
 
 .company-name {

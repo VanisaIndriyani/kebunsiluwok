@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once 'config/session.php';
 require_once 'config/database.php';
 
 // Cek Login
@@ -7,6 +7,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
 }
+$nama_user = isset($_SESSION['nama_lengkap']) ? $_SESSION['nama_lengkap'] : (isset($_SESSION['username']) ? $_SESSION['username'] : 'Pengguna');
+$role_user = isset($_SESSION['role']) ? $_SESSION['role'] : '';
 
 // Handle CRUD Operations
 $message = '';
@@ -78,7 +80,7 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="assets/img/log.png" alt="Logo" style="width: 30px;">
+            <img src="assets/img/log.png" alt="Logo" class="sidebar-logo">
             <a href="#" class="sidebar-brand">KEBUN SILUWOK</a>
         </div>
         <ul class="sidebar-menu">
@@ -131,8 +133,8 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <div class="user-profile">
                 <div class="text-end me-2 d-none d-sm-block">
-                    <div style="font-weight: 600; font-size: 0.9rem;"><?php echo $_SESSION['nama_lengkap']; ?></div>
-                    <div style="font-size: 0.75rem; color: #777;"><?php echo ucfirst($_SESSION['role']); ?></div>
+                    <div style="font-weight: 600; font-size: 0.9rem;"><?php echo $nama_user; ?></div>
+                    <div style="font-size: 0.75rem; color: #777;"><?php echo ucfirst($role_user); ?></div>
                 </div>
                 <div class="user-avatar">
                     <i class="fas fa-user"></i>
@@ -239,6 +241,36 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="Zak">Zak</option>
                                 <option value="Pack">Pack</option>
                                 <option value="Meter">Meter</option>
+                                <option value="Batang">Batang</option>
+                                <option value="M3">M3</option>
+                                <option value="Each">Each</option>
+                                <option value="Box">Box</option>
+                                <option value="Sachet">Sachet</option>
+                                <option value="Hektar">Hektar</option>
+                                <option value="Gram">Gram</option>
+                                <option value="Kwintal">Kwintal</option>
+                                <option value="Ton">Ton</option>
+                                <option value="Picoliter">Picoliter</option>
+                                <option value="Sheet">Sheet</option>
+                                <option value="Rol">Rol</option>
+                                <option value="Set">Set</option>
+                                <option value="M">M</option>
+                                <option value="Tube">Tube</option>
+                                <option value="BT">BT</option>
+                                <option value="Book">Book</option>
+                                <option value="PAA">PAA</option>
+                                <option value="Bag">Bag</option>
+                                <option value="Can">Can</option>
+                                <option value="M2">M2</option>
+                                <option value="Dozen">Dozen</option>
+                                <option value="Car">Car</option>
+                                <option value="BLK">BLK</option>
+                                <option value="RM">RM</option>
+                                <option value="PL">PL</option>
+                                <option value="Buah">Buah</option>
+                                <option value="Galon">Galon</option>
+                                <option value="Botol">Botol</option>
+                                <option value="DR">DR</option>
                             </select>
                         </div>
                         <div class="row">
@@ -295,6 +327,36 @@ $barangs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="Zak">Zak</option>
                                 <option value="Pack">Pack</option>
                                 <option value="Meter">Meter</option>
+                                <option value="Batang">Batang</option>
+                                <option value="M3">M3</option>
+                                <option value="Each">Each</option>
+                                <option value="Box">Box</option>
+                                <option value="Sachet">Sachet</option>
+                                <option value="Hektar">Hektar</option>
+                                <option value="Gram">Gram</option>
+                                <option value="Kwintal">Kwintal</option>
+                                <option value="Ton">Ton</option>
+                                <option value="Picoliter">Picoliter</option>
+                                <option value="Sheet">Sheet</option>
+                                <option value="Rol">Rol</option>
+                                <option value="Set">Set</option>
+                                <option value="M">M</option>
+                                <option value="Tube">Tube</option>
+                                <option value="BT">BT</option>
+                                <option value="Book">Book</option>
+                                <option value="PAA">PAA</option>
+                                <option value="Bag">Bag</option>
+                                <option value="Can">Can</option>
+                                <option value="M2">M2</option>
+                                <option value="Dozen">Dozen</option>
+                                <option value="Car">Car</option>
+                                <option value="BLK">BLK</option>
+                                <option value="RM">RM</option>
+                                <option value="PL">PL</option>
+                                <option value="Buah">Buah</option>
+                                <option value="Galon">Galon</option>
+                                <option value="Botol">Botol</option>
+                                <option value="DR">DR</option>
                             </select>
                         </div>
                         <div class="row">

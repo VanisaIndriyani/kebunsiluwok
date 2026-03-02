@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once 'config/session.php';
 require_once 'config/database.php';
 require_once 'vendor/autoload.php';
 
@@ -205,11 +205,7 @@ if ($type == 'excel') {
         </tbody>
     </table>
     
-    <div style="margin-top: 30px; text-align: right;">
-        <p>Siluwok, ' . date('d F Y') . '</p>
-        <p style="margin-top: 60px; margin-right: 30px;">(____________________)</p>
-        <p style="margin-right: 40px;">Petugas Gudang</p>
-    </div>
+    
     ';
 
     $mpdf->WriteHTML($html);

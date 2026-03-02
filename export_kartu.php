@@ -146,24 +146,8 @@ if ($type == 'excel') {
     $sheet->getStyle('A9:I10')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
     $sheet->getStyle('A9:I10')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
 
-    // Saldo Awal Row
+    // Data dimulai setelah header, tanpa baris Saldo Awal
     $rowNum = 11;
-    $sheet->setCellValue('A' . $rowNum, '');
-    $sheet->setCellValue('B' . $rowNum, '');
-    $sheet->setCellValue('C' . $rowNum, '');
-    $sheet->setCellValue('D' . $rowNum, 'Saldo Awal');
-    $sheet->setCellValue('E' . $rowNum, '-');
-    $sheet->setCellValue('F' . $rowNum, '-');
-    $sheet->setCellValue('G' . $rowNum, $stok_awal);
-    $sheet->setCellValue('H' . $rowNum, '');
-    $sheet->setCellValue('I' . $rowNum, '');
-    
-    $sheet->getStyle('D' . $rowNum)->getFont()->setBold(true);
-    $sheet->getStyle('D' . $rowNum)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-    $sheet->getStyle('E' . $rowNum . ':G' . $rowNum)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->getStyle('G' . $rowNum)->getFont()->setBold(true);
-
-    $rowNum++;
 
     // Data Transaksi
     $sisa = $stok_awal;
@@ -274,14 +258,7 @@ if ($type == 'excel') {
                 <th>Sisa</th>
             </tr>
         </thead>
-        <tbody>
-            <tr style="background-color: #fafafa;">
-                <td colspan="4" style="text-align: right; font-weight: bold;">Saldo Awal</td>
-                <td style="text-align: center;">-</td>
-                <td style="text-align: center;">-</td>
-                <td style="text-align: center; font-weight: bold;">' . number_format($stok_awal, 2) . '</td>
-                <td></td>
-            </tr>';
+        <tbody>';
     
     $sisa = $stok_awal;
     foreach ($transaksi as $row) {

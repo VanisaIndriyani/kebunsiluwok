@@ -149,7 +149,7 @@ if ($selected_afdeling && $selected_barang) {
         ':brg' => $selected_barang,
         ':start_date' => $start_date
     ]);
-    $stok_awal = $stmt_awal->fetchColumn() ?: 0;
+    $stok_awal = 0;
 
     // Hitung Total untuk Info Cards
     foreach ($transaksi as $t) {
@@ -596,7 +596,7 @@ if ($selected_afdeling && $selected_barang) {
                     <tbody>
                         <?php 
                         $no = 1;
-                        $sisa = $stok_awal; 
+                        $sisa = 0; 
                         if (empty($transaksi)) {
                             echo "<tr><td colspan='9' class='text-center py-5 text-muted'><i class='fas fa-inbox fa-3x mb-3 d-block opacity-25'></i>Tidak ada data transaksi pada periode ini</td></tr>";
                         } else {

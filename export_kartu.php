@@ -92,8 +92,8 @@ if ($type == 'excel') {
     $sheet->setCellValue('A1', 'PT. PERKEBUNAN NUSANTARA I REGIONAL 3 KEBUN SILUWOK');
     $sheet->setCellValue('A2', 'KARTU GUDANG AFDELING');
     
-    $sheet->mergeCells('A1:I1');
-    $sheet->mergeCells('A2:I2');
+    $sheet->mergeCells('A1:H1');
+    $sheet->mergeCells('A2:H2');
     
     $sheet->getStyle('A1:A2')->getFont()->setBold(true);
     $sheet->getStyle('A1:A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -108,9 +108,9 @@ if ($type == 'excel') {
     $sheet->setCellValue('F5', 'Persediaan Minimum: ' . ($info_barang['stok_min'] ?? '0'));
     
     // Tanggal di pojok kanan
-    $sheet->setCellValue('I4', date('M-y', strtotime($selected_bulan)));
-    $sheet->getStyle('I4')->getFont()->setBold(true);
-    $sheet->getStyle('I4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    $sheet->setCellValue('H4', date('M-y', strtotime($selected_bulan)));
+    $sheet->getStyle('H4')->getFont()->setBold(true);
+    $sheet->getStyle('H4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
     // Table Header
     $sheet->setCellValue('A9', 'No. Bukti Penerimaan');
@@ -120,33 +120,30 @@ if ($type == 'excel') {
     $sheet->setCellValue('E9', 'Banyaknya');
     $sheet->setCellValue('E10', 'Masuk');
     $sheet->setCellValue('F10', 'Keluar');
-    $sheet->setCellValue('G10', 'Sisa');
-    $sheet->setCellValue('H9', 'Keterangan');
-    $sheet->setCellValue('I9', 'Aksi');
+    $sheet->setCellValue('G9', 'Keterangan');
+    $sheet->setCellValue('H9', 'Aksi');
 
     $sheet->mergeCells('A9:A10');
     $sheet->mergeCells('B9:B10');
     $sheet->mergeCells('C9:C10');
     $sheet->mergeCells('D9:D10');
-    $sheet->mergeCells('E9:G9');
+    $sheet->mergeCells('E9:F9');
+    $sheet->mergeCells('G9:G10');
     $sheet->mergeCells('H9:H10');
-    $sheet->mergeCells('I9:I10');
     
-    $sheet->getStyle('A9:I10')->getFont()->setBold(true);
-    $sheet->getStyle('A9:I10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    $sheet->getStyle('A9:I10')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-    $sheet->getStyle('A9:I10')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-    $sheet->getStyle('A9:I10')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
+    $sheet->getStyle('A9:H10')->getFont()->setBold(true);
+    $sheet->getStyle('A9:H10')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->getStyle('A9:H10')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+    $sheet->getStyle('A9:H10')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+    $sheet->getStyle('A9:H10')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFEEEEEE');
 
     // Data dimulai setelah header, tanpa baris Saldo Awal
     $rowNum = 11;
 
     // Data Transaksi
-    $sisa = 0;
     foreach ($transaksi as $row) {
         $masuk = ($row['jenis_transaksi'] == 'masuk') ? $row['jumlah'] : 0;
         $keluar = ($row['jenis_transaksi'] == 'keluar') ? $row['jumlah'] : 0;
-        $sisa = $sisa + $masuk - $keluar;
 
         $sheet->setCellValue('A' . $rowNum, $row['no_bukti']);
         $sheet->setCellValue('B' . $rowNum, date('d/m/Y', strtotime($row['tanggal'])));
@@ -154,9 +151,8 @@ if ($type == 'excel') {
         $sheet->setCellValue('D' . $rowNum, $row['keterangan']);
         $sheet->setCellValue('E' . $rowNum, ($masuk > 0 ? $masuk : '-'));
         $sheet->setCellValue('F' . $rowNum, ($keluar > 0 ? $keluar : '-'));
-        $sheet->setCellValue('G' . $rowNum, $sisa);
-        $sheet->setCellValue('H' . $rowNum, $row['keterangan_lain']);
-        $sheet->setCellValue('I' . $rowNum, '');
+        $sheet->setCellValue('G' . $rowNum, $row['keterangan_lain']);
+        $sheet->setCellValue('H' . $rowNum, '');
 
         
 
@@ -168,20 +164,19 @@ if ($type == 'excel') {
     $sheet->mergeCells('A' . $rowNum . ':D' . $rowNum);
     $sheet->setCellValue('E' . $rowNum, $total_masuk_periode);
     $sheet->setCellValue('F' . $rowNum, $total_keluar_periode);
-    $sheet->setCellValue('G' . $rowNum, $sisa);
+    $sheet->setCellValue('G' . $rowNum, '');
     $sheet->setCellValue('H' . $rowNum, '');
-    $sheet->setCellValue('I' . $rowNum, '');
     
-    $sheet->getStyle('A' . $rowNum . ':I' . $rowNum)->getFont()->setBold(true);
+    $sheet->getStyle('A' . $rowNum . ':H' . $rowNum)->getFont()->setBold(true);
     $sheet->getStyle('A' . $rowNum . ':D' . $rowNum)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
     // Styling Data Table
     $lastRow = $rowNum;
-    $sheet->getStyle('A11:I' . $lastRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+    $sheet->getStyle('A11:H' . $lastRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
     $sheet->getStyle('A11:B' . ($lastRow-1))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
     
     // Auto Size Columns
-    foreach (range('A', 'I') as $col) {
+    foreach (range('A', 'H') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
     }
 
@@ -241,22 +236,19 @@ if ($type == 'excel') {
                 <th rowspan="2">Tanggal</th>
                 <th rowspan="2">Nama Mandor yang mengambil</th>
                 <th rowspan="2">Dipakai untuk diterima dari</th>
-                <th colspan="3">Banyaknya</th>
+                <th colspan="2">Banyaknya</th>
                 <th rowspan="2">Keterangan</th>
             </tr>
             <tr style="background-color: #f2f2f2;">
                 <th>Masuk</th>
                 <th>Keluar</th>
-                <th>Sisa</th>
             </tr>
         </thead>
         <tbody>';
     
-    $sisa = 0;
     foreach ($transaksi as $row) {
         $masuk = ($row['jenis_transaksi'] == 'masuk') ? $row['jumlah'] : 0;
         $keluar = ($row['jenis_transaksi'] == 'keluar') ? $row['jumlah'] : 0;
-        $sisa = $sisa + $masuk - $keluar;
         
         
 
@@ -268,13 +260,12 @@ if ($type == 'excel') {
                 <td>' . htmlspecialchars($row['keterangan']) . '</td>
                 <td style="text-align: center;">' . ($masuk > 0 ? number_format($masuk, 2) : '-') . '</td>
                 <td style="text-align: center;">' . ($keluar > 0 ? number_format($keluar, 2) : '-') . '</td>
-                <td style="text-align: center; font-weight: bold;">' . number_format($sisa, 2) . '</td>
                 <td>' . htmlspecialchars($row['keterangan_lain']) . '</td>
             </tr>';
     }
     
     if (count($transaksi) == 0) {
-        $html .= '<tr><td colspan="9" style="text-align: center;">Tidak ada data transaksi.</td></tr>';
+        $html .= '<tr><td colspan="7" style="text-align: center;">Tidak ada data transaksi.</td></tr>';
     }
 
     $html .= '
@@ -282,7 +273,6 @@ if ($type == 'excel') {
                 <td colspan="4" style="text-align: right;">Total Mutasi Bulan Ini</td>
                 <td style="text-align: center;">' . number_format($total_masuk_periode, 2) . '</td>
                 <td style="text-align: center;">' . number_format($total_keluar_periode, 2) . '</td>
-                <td style="text-align: center;">' . number_format($sisa, 2) . '</td>
                 <td></td>
             </tr>
         </tbody>

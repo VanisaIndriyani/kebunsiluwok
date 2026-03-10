@@ -583,27 +583,24 @@ if ($selected_afdeling && $selected_barang) {
                             <th rowspan="2">Tanggal</th>
                             <th rowspan="2">Nama Mandor yang mengambil</th>
                             <th rowspan="2">Dipakai untuk diterima dari</th>
-                            <th colspan="3">Banyaknya</th>
+                            <th colspan="2">Banyaknya</th>
                             <th rowspan="2">Keterangan</th>
                             <th rowspan="2" width="10%">Aksi</th>
                         </tr>
                         <tr>
                             <th>Masuk</th>
                             <th>Keluar</th>
-                            <th>Sisa</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
                         $no = 1;
-                        $sisa = 0; 
                         if (empty($transaksi)) {
-                            echo "<tr><td colspan='9' class='text-center py-5 text-muted'><i class='fas fa-inbox fa-3x mb-3 d-block opacity-25'></i>Tidak ada data transaksi pada periode ini</td></tr>";
+                            echo "<tr><td colspan='8' class='text-center py-5 text-muted'><i class='fas fa-inbox fa-3x mb-3 d-block opacity-25'></i>Tidak ada data transaksi pada periode ini</td></tr>";
                         } else {
                             foreach ($transaksi as $row) {
                                 $masuk = ($row['jenis_transaksi'] == 'masuk') ? $row['jumlah'] : 0;
                                 $keluar = ($row['jenis_transaksi'] == 'keluar') ? $row['jumlah'] : 0;
-                                $sisa = $sisa + $masuk - $keluar;
                         ?>
                         <tr>
                             <td><span class="badge bg-light text-dark border shadow-sm rounded-pill px-3 py-2"><?php echo $row['no_bukti']; ?></span></td>
@@ -636,9 +633,6 @@ if ($selected_afdeling && $selected_barang) {
                                 <?php else: ?>
                                     <span class="text-muted">-</span>
                                 <?php endif; ?>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge badge-soft-primary rounded-pill px-3"><?php echo number_format($sisa, 2); ?></span>
                             </td>
                             <td class="text-muted small"><?php echo $row['keterangan_lain']; ?></td>
                             <td class="text-center">
@@ -676,7 +670,6 @@ if ($selected_afdeling && $selected_barang) {
                             <td colspan="4" class="text-end text-secondary text-uppercase py-3">Total Mutasi Bulan Ini</td>
                             <td class="text-center text-success py-3"><?php echo number_format($total_masuk_periode, 2); ?></td>
                             <td class="text-center text-danger py-3"><?php echo number_format($total_keluar_periode, 2); ?></td>
-                            <td class="text-center text-primary py-3"><?php echo number_format($sisa, 2); ?></td>
                             <td></td>
                             <td></td>
                         </tr>

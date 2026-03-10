@@ -71,15 +71,7 @@ if ($selected_afdeling && $selected_barang) {
     ]);
     $transaksi = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Hitung Stok Awal
-    $start_date = $selected_bulan . '-01';
-    $stmt_awal = $koneksi->prepare("SELECT SUM(CASE WHEN jenis_transaksi = 'masuk' THEN jumlah ELSE -jumlah END) FROM transaksi_gudang WHERE id_afdeling = :afd AND id_barang = :brg AND tanggal < :start_date");
-    $stmt_awal->execute([
-        ':afd' => $selected_afdeling,
-        ':brg' => $selected_barang,
-        ':start_date' => $start_date
-    ]);
-    $stok_awal = $stmt_awal->fetchColumn() ?: 0;
+    $stok_awal = 0;
 
     // Hitung Total untuk Info Cards
     foreach ($transaksi as $t) {
@@ -150,7 +142,7 @@ if ($type == 'excel') {
     $rowNum = 11;
 
     // Data Transaksi
-    $sisa = $stok_awal;
+    $sisa = 0;
     foreach ($transaksi as $row) {
         $masuk = ($row['jenis_transaksi'] == 'masuk') ? $row['jumlah'] : 0;
         $keluar = ($row['jenis_transaksi'] == 'keluar') ? $row['jumlah'] : 0;
@@ -260,7 +252,7 @@ if ($type == 'excel') {
         </thead>
         <tbody>';
     
-    $sisa = $stok_awal;
+    $sisa = 0;
     foreach ($transaksi as $row) {
         $masuk = ($row['jenis_transaksi'] == 'masuk') ? $row['jumlah'] : 0;
         $keluar = ($row['jenis_transaksi'] == 'keluar') ? $row['jumlah'] : 0;
